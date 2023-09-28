@@ -8,11 +8,11 @@
         android:name="eu.mcomputing.mobv.zadanie.MyFragment">
 
         <action
-            android:id="@+id/action_first_to_second1"
+            android:id="@+id/action_first_to_map"
             app:destination="@id/secondFragment2"/>
 
         <action
-            android:id="@+id/action_first_to_second2"
+            android:id="@+id/action_first_to_second"
             app:destination="@id/feedFragment"/>
 
     </fragment>
@@ -32,6 +32,8 @@
     </fragment>
 
     <fragment android:id="@+id/profilFragment" android:name="eu.mcomputing.mobv.zadanie.ProfileFragment" >
+        <argument android:name="pronounsField"
+            app:argType="string" />
 
     </fragment>
 

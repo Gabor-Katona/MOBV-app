@@ -15,7 +15,10 @@ class MyFragment : Fragment(R.layout.fragment_login) {
         btn.setOnClickListener { view ->
             /*val action = MyFragment2.actionFirstToSecond1("YourStringArgument")
             view.findNavController().navigate(action)*/
-           view.findNavController().navigate(R.id.action_first_to_second2)
+           //view.findNavController().navigate(R.id.action_first_to_second2)
+
+            val action = ProfileFragmentDirections.actionFirstToProfil("hello")
+            view.findNavController().navigate(action)
         }
 
     }
