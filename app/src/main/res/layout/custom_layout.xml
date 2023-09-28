@@ -5,31 +5,33 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/ic_action_map.png"
+        android:id="@+id/ic_action_map"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/ic_action_map"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ic_action_list.png"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/ic_action_list"
+        app:layout_constraintStart_toStartOf="parent"
+        android:clickable="true"
+        android:focusable="true"/>
 
     <ImageView
-        android:id="@+id/ic_action_list.png"
+        android:id="@+id/ic_action_list"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/ic_action_list"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ic_action_account.png"
-        app:layout_constraintStart_toEndOf="@+id/ic_action_map.png" />
+        app:layout_constraintEnd_toStartOf="@+id/ic_action_account"
+        app:layout_constraintStart_toEndOf="@+id/ic_action_map" />
 
     <ImageView
-        android:id="@+id/ic_action_account.png"
+        android:id="@+id/ic_action_account"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/ic_action_account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ic_action_list.png" />
+        app:layout_constraintStart_toEndOf="@+id/ic_action_list" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

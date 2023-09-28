@@ -11,11 +11,12 @@ class MyFragment : Fragment(R.layout.fragment_login) {
         super.onViewCreated(view, savedInstanceState)
 
         // Kód z Activity
-        /*val btn: Button = view.findViewById(R.id.submitButton)
+        val btn: Button = view.findViewById(R.id.submitButton)
         btn.setOnClickListener { view ->
-           view.findNavController().navigate(R.id.secondFragment)
-        }*/
-
+            /*val action = MyFragment2.actionFirstToSecond1("YourStringArgument")
+            view.findNavController().navigate(action)*/
+           view.findNavController().navigate(R.id.action_first_to_second2)
+        }
 
     }
 }
