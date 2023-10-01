@@ -11,14 +11,14 @@ class InputActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_signup)
 
-        val submitButton: Button = findViewById(R.id.submitButton)
+        val submitButton: Button = findViewById(R.id.submit_button)
         submitButton.setOnClickListener {
             /*val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)*/
 
             // Logika po kliknutí na tlačidlo, napríklad na získanie textu z EditText
-            val input1: String = findViewById<EditText>(R.id.editText1).text.toString()
-            val input2: String = findViewById<EditText>(R.id.editText2).text.toString()
+            val input1: String = findViewById<EditText>(R.id.edit_text_email).text.toString()
+            val input2: String = findViewById<EditText>(R.id.edit_text_password).text.toString()
 
             // Spracovanie dát alebo iné akcie
             Log.d("MojTAG", input1)

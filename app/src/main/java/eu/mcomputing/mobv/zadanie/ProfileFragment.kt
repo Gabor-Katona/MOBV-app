@@ -10,6 +10,5 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         super.onViewCreated(view, savedInstanceState)
 
 
-        Log.d("TAG", getArguments().toString())
     }
 }

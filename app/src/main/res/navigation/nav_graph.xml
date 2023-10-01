@@ -32,8 +32,6 @@
     </fragment>
 
     <fragment android:id="@+id/profilFragment" android:name="eu.mcomputing.mobv.zadanie.ProfileFragment" >
-        <argument android:name="pronounsField"
-            app:argType="string" />
 
     </fragment>
 

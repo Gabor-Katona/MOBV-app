@@ -5,33 +5,31 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/ic_action_map"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:id="@+id/map"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_action_map"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ic_action_list"
-        app:layout_constraintStart_toStartOf="parent"
-        android:clickable="true"
-        android:focusable="true"/>
+        app:layout_constraintEnd_toStartOf="@+id/feed"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/ic_action_list"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:id="@+id/feed"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_action_list"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ic_action_account"
-        app:layout_constraintStart_toEndOf="@+id/ic_action_map" />
+        app:layout_constraintEnd_toStartOf="@+id/profile"
+        app:layout_constraintStart_toEndOf="@+id/map" />
 
     <ImageView
-        android:id="@+id/ic_action_account"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:id="@+id/profile"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/ic_action_account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ic_action_list" />
+        app:layout_constraintStart_toEndOf="@+id/feed" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
