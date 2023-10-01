@@ -18,7 +18,7 @@ class MyFragment : Fragment(R.layout.fragment_login) {
            //view.findNavController().navigate(R.id.action_first_to_second2)
 
 
-            view.findNavController().navigate(R.id.action_first_to_second)
+            //view.findNavController().navigate(R.id.action_first_to_second)
         }
 
     }

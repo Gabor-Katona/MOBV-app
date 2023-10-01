@@ -1,50 +1,66 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/firstFragment">
+    app:startDestination="@+id/introFragment">
 
     <fragment
-        android:id="@+id/firstFragment"
-        android:name="eu.mcomputing.mobv.zadanie.MyFragment">
+        android:id="@+id/introFragment"
+        android:name="eu.mcomputing.mobv.zadanie.IntroFragment"
+        android:label="IntroFragment">
 
         <action
-            android:id="@+id/action_first_to_map"
-            app:destination="@id/secondFragment2"/>
+            android:id="@+id/action_intro_login"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_intro_signup"
+            app:destination="@id/signupFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="eu.mcomputing.mobv.zadanie.LoginFragment"
+        android:label="LoginFragment">
+        <action
+            android:id="@+id/action_login_feed"
+            app:destination="@id/feedFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="eu.mcomputing.mobv.zadanie.SignupFragment"
+        android:label="SignupFragment">
 
         <action
-            android:id="@+id/action_first_to_second"
-            app:destination="@id/feedFragment"/>
-
-    </fragment>
-
-    <fragment android:id="@+id/secondFragment1" android:name="eu.mcomputing.mobv.zadanie.MyFragment2" >
-    </fragment>
-
-    <fragment android:id="@+id/secondFragment2" android:name="eu.mcomputing.mobv.zadanie.MapFragment" >
+            android:id="@+id/action_signup_feed"
+            app:destination="@id/feedFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/feedFragment"
         android:name="eu.mcomputing.mobv.zadanie.FeedFragment"
-        android:label="FeedFragment">
+        android:label="FeedFragment" />
 
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="eu.mcomputing.mobv.zadanie.MapFragment"
+        android:label="MapFragment" />
 
-    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="eu.mcomputing.mobv.zadanie.ProfileFragment"
+        android:label="ProfileFragment" />
 
-    <fragment android:id="@+id/profilFragment" android:name="eu.mcomputing.mobv.zadanie.ProfileFragment" >
-
-    </fragment>
 
     <action
-        android:id="@+id/action_first_to_second"
-        app:destination="@id/secondFragment2" />
-
-    <action
-        android:id="@+id/action_first_to_profil"
-        app:destination="@id/profilFragment" />
-
-    <action
-        android:id="@+id/action_first_to_feed"
+        android:id="@+id/action_to_feed"
         app:destination="@id/feedFragment" />
+
+    <action
+        android:id="@+id/action_to_map"
+        app:destination="@id/mapFragment" />
+
+    <action
+        android:id="@+id/action_to_profile"
+        app:destination="@id/profileFragment" />
 
 </navigation>

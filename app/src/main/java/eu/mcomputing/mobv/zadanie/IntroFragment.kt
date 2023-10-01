@@ -13,13 +13,13 @@ class IntroFragment : Fragment(R.layout.fragment_intro) {
 
         view.findViewById<Button>(R.id.login).apply {
             setOnClickListener {
-                //it.findNavController().navigate(R.id.action_intro_login)
+                it.findNavController().navigate(R.id.action_intro_login)
             }
         }
 
         view.findViewById<Button>(R.id.signup).apply {
             setOnClickListener {
-                //it.findNavController().navigate(R.id.action_intro_signup)
+                it.findNavController().navigate(R.id.action_intro_signup)
             }
         }
     }

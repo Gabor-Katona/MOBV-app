@@ -13,7 +13,8 @@ class SignupFragment : Fragment(R.layout.fragment_signup) {
 
         view.findViewById<TextView>(R.id.submit_button).apply {
             setOnClickListener {
-                //findNavController().navigate(R.id.action_signup_feed)
+
+                findNavController().navigate(R.id.action_signup_feed)
             }
         }
     }

@@ -12,15 +12,15 @@ class CustomConstraintLayout(context: Context, attrs: AttributeSet? = null) : Co
         val layout = LayoutInflater.from(context).inflate(R.layout.custom_layout, this, true)
 
         layout.findViewById<ImageView>(R.id.map).setOnClickListener {
-            it.findNavController().navigate(R.id.action_first_to_second)
+            it.findNavController().navigate(R.id.action_to_map)
         }
 
         layout.findViewById<ImageView>(R.id.feed).setOnClickListener {
-            it.findNavController().navigate(R.id.action_first_to_feed)
+            it.findNavController().navigate(R.id.action_to_feed)
         }
 
         layout.findViewById<ImageView>(R.id.profile).setOnClickListener {
-            it.findNavController().navigate(R.id.action_first_to_profil)
+            it.findNavController().navigate(R.id.action_to_profile)
         }
     }
 
