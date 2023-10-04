@@ -12,45 +12,44 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:text="Prihlásenie"
-        android:textSize="24sp"
+        style="@style/LargeTextStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/label_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="Username:"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header_title" />
 
-    <EditText
-        android:id="@+id/edit_text_username"
-        android:layout_width="0dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/label_email"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Zadajte username"
-        app:layout_constraintTop_toBottomOf="@+id/label_email"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/header_title">
 
-    <TextView
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/label_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Heslo:"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_username" />
-
-    <EditText
-        android:id="@+id/edit_text_password"
-        android:layout_width="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Zadajte heslo"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_password" />
+        app:layout_constraintTop_toBottomOf="@+id/label_email">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/reset_passwd_button"
@@ -59,7 +58,7 @@
         android:layout_marginTop="28dp"
         android:text="Obnoviť heslo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_password" />
+        app:layout_constraintTop_toBottomOf="@+id/label_password" />
 
     <Button
         android:id="@+id/submit_button"
