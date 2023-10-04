@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_login_feed"
             app:destination="@id/feedFragment" />
+        <action
+            android:id="@+id/action_to_passwordResetFragment"
+            app:destination="@id/passwordResetFragment" />
     </fragment>
 
     <fragment
@@ -48,8 +51,45 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="eu.mcomputing.mobv.zadanie.ProfileFragment"
-        android:label="ProfileFragment" />
+        android:label="ProfileFragment" >
 
+        <action
+            android:id="@+id/action_to_changePassword"
+            app:destination="@id/changePasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/passwordResetFragment"
+        android:name="eu.mcomputing.mobv.zadanie.PasswordResetFragment"
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_to_passwordResetFragment2"
+            app:destination="@id/passwordResetFragment2" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/passwordResetFragment2"
+        android:name="eu.mcomputing.mobv.zadanie.PasswordResetFragment2"
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="eu.mcomputing.mobv.zadanie.ChangePasswordFragment"
+        android:label="ProfileFragment" >
+
+        <action
+            android:id="@+id/action_to_profile"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/otherProfileFragment"
+        android:name="eu.mcomputing.mobv.zadanie.OtherProfileFragment"
+        android:label="MapFragment" />
 
     <action
         android:id="@+id/action_to_feed"

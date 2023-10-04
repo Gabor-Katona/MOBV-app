@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -17,6 +18,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 val username: String = view.findViewById<EditText>(R.id.edit_text_username).text.toString()
                 val password: String = view.findViewById<EditText>(R.id.edit_text_password).text.toString()
                 login(username, password)
+            }
+        }
+
+        view.findViewById<Button>(R.id.reset_passwd_button).apply {
+            setOnClickListener {
+                it.findNavController().navigate(R.id.action_to_passwordResetFragment)
             }
         }
 
