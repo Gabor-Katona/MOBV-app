@@ -1,12 +1,14 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/introFragment">
+    app:startDestination="@+id/introFragment"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <fragment
         android:id="@+id/introFragment"
         android:name="eu.mcomputing.mobv.zadanie.IntroFragment"
-        android:label="IntroFragment">
+        android:label="IntroFragment"
+        tools:layout="@layout/fragment_intro">
 
         <action
             android:id="@+id/action_intro_login"
@@ -19,7 +21,9 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="eu.mcomputing.mobv.zadanie.LoginFragment"
-        android:label="LoginFragment">
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login">
+
         <action
             android:id="@+id/action_login_feed"
             app:destination="@id/feedFragment" />
@@ -31,7 +35,8 @@
     <fragment
         android:id="@+id/signupFragment"
         android:name="eu.mcomputing.mobv.zadanie.SignupFragment"
-        android:label="SignupFragment">
+        android:label="SignupFragment"
+        tools:layout="@layout/fragment_signup">
 
         <action
             android:id="@+id/action_signup_feed"
@@ -41,17 +46,20 @@
     <fragment
         android:id="@+id/feedFragment"
         android:name="eu.mcomputing.mobv.zadanie.FeedFragment"
-        android:label="FeedFragment" />
+        android:label="FeedFragment"
+        tools:layout="@layout/fragment_feed"/>
 
     <fragment
         android:id="@+id/mapFragment"
         android:name="eu.mcomputing.mobv.zadanie.MapFragment"
-        android:label="MapFragment" />
+        android:label="MapFragment"
+        tools:layout="@layout/fragment_map"/>
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="eu.mcomputing.mobv.zadanie.ProfileFragment"
-        android:label="ProfileFragment" >
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile">
 
         <action
             android:id="@+id/action_to_changePassword"
@@ -61,7 +69,9 @@
     <fragment
         android:id="@+id/passwordResetFragment"
         android:name="eu.mcomputing.mobv.zadanie.PasswordResetFragment"
-        android:label="ProfileFragment" >
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_password_reset">
+
         <action
             android:id="@+id/action_to_passwordResetFragment2"
             app:destination="@id/passwordResetFragment2" />
@@ -70,7 +80,8 @@
     <fragment
         android:id="@+id/passwordResetFragment2"
         android:name="eu.mcomputing.mobv.zadanie.PasswordResetFragment2"
-        android:label="ProfileFragment" >
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_password_reset2">
         <action
             android:id="@+id/action_to_loginFragment"
             app:destination="@id/loginFragment" />
@@ -79,7 +90,8 @@
     <fragment
         android:id="@+id/changePasswordFragment"
         android:name="eu.mcomputing.mobv.zadanie.ChangePasswordFragment"
-        android:label="ProfileFragment" >
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_change_password">
 
         <action
             android:id="@+id/action_to_profile"
@@ -89,7 +101,8 @@
     <fragment
         android:id="@+id/otherProfileFragment"
         android:name="eu.mcomputing.mobv.zadanie.OtherProfileFragment"
-        android:label="MapFragment" />
+        android:label="MapFragment"
+        tools:layout="@layout/fragment_other_profile"/>
 
     <action
         android:id="@+id/action_to_feed"
