@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Mon Application</string>
+    <string name="welcome_message">Bienvenue dans mon application!</string>
+
+    <string name="mapbox_access_token">pk.eyJ1Ijoia2F0b25hZyIsImEiOiJjbG4yMmpqeWwwNHZhMmlub2h1azMyNWViIn0.0X8Y0TPh_3vunj1_UivMAA</string>
+</resources>
