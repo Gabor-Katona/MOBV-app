@@ -16,7 +16,7 @@ class ExampleFragment : Fragment(R.layout.fragment_example) {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = MyAdapter()
 
-        var list = listOf( Item( 1, "text" ),  Item( 2, "hello"))
+
 
         //recyclerView.adapter.updateItems(list)
     }
