@@ -51,7 +51,6 @@ class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
 }
 
-
 class MyItemDiffCallback(
     private val oldList: List<Item>,
     private val newList: List<Item>
