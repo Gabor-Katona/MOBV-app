@@ -41,19 +41,17 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             adapter.updateItems(items)
         }
 
-        if(viewModel.feed_items.value == null) {
 
-            // ArrayList of class ItemsViewModel
-            val data = ArrayList<MyItem>()
+        // ArrayList of class ItemsViewModel
+        val data = ArrayList<MyItem>()
 
-            // This loop will create 10 Views containing
-            // the image with the count of view
-            for (i in 1..10) {
-                data.add(MyItem(i, R.drawable.ic_action_map, "Item " + i))
-            }
-
-            viewModel.updateItems(data)
+        // This loop will create 10 Views containing
+        // the image with the count of view
+        for (i in 1..10) {
+            data.add(MyItem(i, R.drawable.ic_action_map, "Item " + i))
         }
+
+        viewModel.updateItems(data)
 
     }
 }

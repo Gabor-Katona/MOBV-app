@@ -34,13 +34,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             Log.d("Profile", "prvky su $items")
         }
 
-        val data = ArrayList<MyItem>()
-
-        for (i in 1..3) {
-            data.add(MyItem(i, R.drawable.ic_action_list, "Item " + i))
-        }
-
-        viewModel.updateItems(data)
 
 
     }

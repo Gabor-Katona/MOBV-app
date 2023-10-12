@@ -1,5 +1,6 @@
 package eu.mcomputing.mobv.zadanie
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,6 +52,11 @@ class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.imageView.setImageResource(items[position].imageResource)
         holder.textView.text = items[position].text
+
+        holder.textView.setOnClickListener {
+            Log.d("Click", "clicked $position")
+            updateItems(items.subList(position , items.size))
+        }
     }
 
     // Vracia počet položiek v zozname
