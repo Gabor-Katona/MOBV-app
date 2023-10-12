@@ -8,10 +8,30 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-data class Item(val id: Int ,val imageResource: Int, val text: String)
+data class MyItem(val id: Int, val imageResource: Int, val text: String){
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MyItem
+
+        if (id != other.id) return false
+        if (imageResource != other.imageResource) return false
+        if (text != other.text) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + imageResource
+        result = 31 * result + text.hashCode()
+        return result
+    }
+}
 
 class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
-    private var items: List<Item> = listOf()
+    private var items: List<MyItem> = listOf()
 
     // ViewHolder poskytuje odkazy na zobrazenia v každej položke
     //class MyViewHolder(val imageView: ImageView, val textView: TextView) : RecyclerView.ViewHolder(imageView, textView)
@@ -41,7 +61,7 @@ class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
         notifyDataSetChanged()
     }*/
 
-    fun updateItems(newItems: List<Item>) {
+    fun updateItems(newItems: List<MyItem>) {
         val diffCallback = MyItemDiffCallback(items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
@@ -52,8 +72,8 @@ class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 }
 
 class MyItemDiffCallback(
-    private val oldList: List<Item>,
-    private val newList: List<Item>
+    private val oldList: List<MyItem>,
+    private val newList: List<MyItem>
 ) : DiffUtil.Callback() {
     override fun getOldListSize() = oldList.size
     override fun getNewListSize() = newList.size
