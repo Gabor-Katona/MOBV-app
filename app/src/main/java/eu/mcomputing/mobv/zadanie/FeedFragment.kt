@@ -17,7 +17,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         super.onViewCreated(view, savedInstanceState)
 
         // Inicializácia ViewModel
-        viewModel = ViewModelProvider(this)[FeedViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[FeedViewModel::class.java]
 
         // getting the recyclerview by its id
         val recyclerview = view.findViewById<RecyclerView>(R.id.recycler_view)
@@ -35,26 +35,25 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         // Setting the Adapter with the recyclerview
         recyclerview.adapter = adapter
 
-
-        // ArrayList of class ItemsViewModel
-        val data = ArrayList<MyItem>()
-
-        // This loop will create 20 Views containing
-        // the image with the count of view
-        for (i in 1..10) {
-            data.add(MyItem(i, R.drawable.ic_action_map, "Item " + i))
+        // Pozorovanie zmeny hodnoty
+        viewModel.feed_items.observe(viewLifecycleOwner) { items ->
+            // Tu môžete aktualizovať UI podľa hodnoty stringValue
+            adapter.updateItems(items)
         }
 
-        adapter.updateItems(data)
+        if(viewModel.feed_items.value == null) {
 
+            // ArrayList of class ItemsViewModel
+            val data = ArrayList<MyItem>()
 
-        // Pozorovanie zmeny hodnoty
-        viewModel.sampleString.observe(viewLifecycleOwner, Observer { stringValue ->
-            // Tu môžete aktualizovať UI podľa hodnoty stringValue
-            Log.d("FeedFragment", "novy text: $stringValue")
-        })
+            // This loop will create 10 Views containing
+            // the image with the count of view
+            for (i in 1..10) {
+                data.add(MyItem(i, R.drawable.ic_action_map, "Item " + i))
+            }
 
-        viewModel.updateString("zmena textu")
+            viewModel.updateItems(data)
+        }
 
     }
 }

@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class FeedViewModel : ViewModel() {
-    private val _sampleString = MutableLiveData<String>()
-    val sampleString: LiveData<String>
-        get() = _sampleString
+    private val _feed_items = MutableLiveData<List<MyItem>>()
+    val feed_items: LiveData<List<MyItem>>
+        get() = _feed_items
 
-    fun updateString(value: String) {
-        _sampleString.value = value
+    fun updateItems(items: List<MyItem>) {
+        _feed_items.value = items
     }
 }

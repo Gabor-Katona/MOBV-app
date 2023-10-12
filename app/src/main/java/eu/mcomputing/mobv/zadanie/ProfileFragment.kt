@@ -5,12 +5,15 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private var mapView: MapView? = null
+
+    private lateinit var viewModel: FeedViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -23,5 +26,22 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 it.findNavController().navigate(R.id.action_to_changePassword)
             }
         }
+
+        viewModel = ViewModelProvider(requireActivity())[FeedViewModel::class.java]
+
+        viewModel.feed_items.observe(viewLifecycleOwner) { items ->
+            // Tu môžete aktualizovať UI podľa hodnoty stringValue
+            Log.d("Profile", "prvky su $items")
+        }
+
+        val data = ArrayList<MyItem>()
+
+        for (i in 1..3) {
+            data.add(MyItem(i, R.drawable.ic_action_list, "Item " + i))
+        }
+
+        viewModel.updateItems(data)
+
+
     }
 }
