@@ -3,6 +3,7 @@ package eu.mcomputing.mobv.zadanie
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -38,11 +39,12 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         // Pozorovanie zmeny hodnoty
         viewModel.feed_items.observe(viewLifecycleOwner) { items ->
             // Tu môžete aktualizovať UI podľa hodnoty stringValue
+            Log.d("FeedFragment", "nove hodnoty $items")
             adapter.updateItems(items)
         }
 
 
-        // ArrayList of class ItemsViewModel
+        /*// ArrayList of class ItemsViewModel
         val data = ArrayList<MyItem>()
 
         // This loop will create 10 Views containing
@@ -51,7 +53,11 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
             data.add(MyItem(i, R.drawable.ic_action_map, "Item " + i))
         }
 
-        viewModel.updateItems(data)
+        viewModel.updateItems(data)*/
+
+        view.findViewById<Button>(R.id.btn_generate).setOnClickListener {
+            viewModel.updateItems()
+        }
 
     }
 }
