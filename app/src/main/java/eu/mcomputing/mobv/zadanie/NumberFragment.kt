@@ -1,0 +1,30 @@
+package eu.mcomputing.mobv.zadanie
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+
+class NumberFragment : Fragment() {
+    private lateinit var viewModel: NumberViewModel
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_number, container, false)
+        viewModel = ViewModelProvider(this).get(NumberViewModel::class.java)
+
+        viewModel.randomNumber.observe(viewLifecycleOwner, Observer { number ->
+            view.findViewById<TextView>(R.id.textViewNumber).text = number.toString()
+        })
+
+        view.findViewById<Button>(R.id.buttonGenerate).setOnClickListener {
+            viewModel.generateRandomNumber()
+        }
+
+        return view
+    }
+}

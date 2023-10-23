@@ -1,7 +1,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/feedFragment"
+    app:startDestination="@+id/numberFragment"
     xmlns:tools="http://schemas.android.com/tools">
 
     <fragment
@@ -103,6 +103,12 @@
         android:name="eu.mcomputing.mobv.zadanie.OtherProfileFragment"
         android:label="MapFragment"
         tools:layout="@layout/fragment_other_profile"/>
+
+    <fragment
+        android:id="@+id/numberFragment"
+        android:name="eu.mcomputing.mobv.zadanie.NumberFragment"
+        android:label="NumberFragment"
+        tools:layout="@layout/fragment_number"/>
 
     <action
         android:id="@+id/action_to_feed"
