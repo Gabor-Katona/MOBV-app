@@ -5,11 +5,10 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import eu.mcomputing.mobv.zadanie.viewmodels.FeedViewModel
 
 class FeedFragment : Fragment(R.layout.fragment_feed) {
     private lateinit var viewModel: FeedViewModel

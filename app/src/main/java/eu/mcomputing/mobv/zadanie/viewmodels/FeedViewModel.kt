@@ -1,9 +1,11 @@
-package eu.mcomputing.mobv.zadanie
+package eu.mcomputing.mobv.zadanie.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import eu.mcomputing.mobv.zadanie.MyItem
+import eu.mcomputing.mobv.zadanie.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
