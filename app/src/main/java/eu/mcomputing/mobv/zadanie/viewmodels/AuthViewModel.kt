@@ -1,5 +1,6 @@
 package eu.mcomputing.mobv.zadanie.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,15 +10,35 @@ import eu.mcomputing.mobv.zadanie.data.model.User
 import kotlinx.coroutines.launch
 
 class AuthViewModel(private val dataRepository: DataRepository) : ViewModel() {
-    private val _registrationResult = MutableLiveData<Pair<String, User?>>()
+    private val _registrationResult = MutableLiveData<String>()
 
-    val registrationResult: LiveData<Pair<String, User?>> get() = _registrationResult
+    val registrationResult: LiveData<String>
+        get() = _registrationResult
+
+    private val _loginResult = MutableLiveData<String>()
+    val loginResult: LiveData<String>
+        get() = _loginResult
+
+    private val _userResult = MutableLiveData<User?>()
+    val userResult: LiveData<User?>
+        get() = _userResult
 
     fun registerUser(username: String, email: String, password: String) {
         viewModelScope.launch {
-            _registrationResult.postValue(
-                dataRepository.apiRegisterUser(username, email, password)
-            )
+            val result = dataRepository.apiRegisterUser(username, email, password)
+
+            _registrationResult.postValue(result.first ?: "")
+            _userResult.postValue(result.second)
+        }
+    }
+
+    fun loginUser(username: String, password: String) {
+        viewModelScope.launch {
+            val result = dataRepository.apiLoginUser(username, password)
+
+            //Log.d("TAG2", result.second.toString())
+            _loginResult.postValue(result.first ?: "")
+            _userResult.postValue(result.second)
         }
     }
 }

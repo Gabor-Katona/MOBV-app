@@ -5,3 +5,9 @@ data class RegistrationResponse(
     val access: String,
     val refresh: String
 )
+
+data class LoginResponse(
+    val uid: String,
+    val access: String,
+    val refresh: String
+)
