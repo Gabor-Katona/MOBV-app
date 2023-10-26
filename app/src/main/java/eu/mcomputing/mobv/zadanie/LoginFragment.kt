@@ -14,13 +14,15 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
+import eu.mcomputing.mobv.zadanie.databinding.FragmentLoginBinding
 import eu.mcomputing.mobv.zadanie.viewmodels.AuthViewModel
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private lateinit var viewModel: AuthViewModel
+    private var binding: FragmentLoginBinding? = null
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -28,34 +30,46 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             }
         })[AuthViewModel::class.java]
 
-        // login button
-        view.findViewById<Button>(R.id.submit_button).apply {
-            setOnClickListener {
-                val username: String = view.findViewById<TextInputEditText>(R.id.edit_text_username).text.toString()
-                val password: String = view.findViewById<TextInputEditText>(R.id.edit_text_password).text.toString()
+    }
 
-                login(username, password)
-            }
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // password reset button
-        view.findViewById<Button>(R.id.reset_passwd_button).apply {
-            setOnClickListener {
-                it.findNavController().navigate(R.id.action_to_passwordResetFragment)
+        binding = FragmentLoginBinding.bind(view).apply {
+            lifecycleOwner = viewLifecycleOwner
+        }.also { bnd ->
+            bnd.submitButton.apply {
+                setOnClickListener {
+                    val username: String = bnd.editTextUsername.text.toString()
+                    val password: String = bnd.editTextPassword.text.toString()
+                    login(username, password)
+                }
             }
-        }
 
-        viewModel.loginResult.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                requireView().findNavController().navigate(R.id.action_login_feed)
-            } else {
-                Snackbar.make(
-                    view.findViewById(R.id.submit_button),
-                    it,
-                    Snackbar.LENGTH_SHORT
-                ).show()
+            bnd.resetPasswdButton.apply {
+                setOnClickListener {
+                    it.findNavController().navigate(R.id.action_to_passwordResetFragment)
+                }
             }
+
+            viewModel.loginResult.observe(viewLifecycleOwner) {
+                if (it.isEmpty()) {
+                    requireView().findNavController().navigate(R.id.action_login_feed)
+                } else {
+                    Snackbar.make(
+                        bnd.submitButton,
+                        it,
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
         }
+    }
+
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
     }
 
     private fun login(username: String, password: String) {

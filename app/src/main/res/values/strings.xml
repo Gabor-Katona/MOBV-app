@@ -5,4 +5,15 @@
     <string name="welcome_message">Vitajte v mojej aplikácii!</string>
 
     <string name="mapbox_access_token">pk.eyJ1Ijoia2F0b25hZyIsImEiOiJjbG4yMmpqeWwwNHZhMmlub2h1azMyNWViIn0.0X8Y0TPh_3vunj1_UivMAA</string>
+
+
+    <string name="email">Email:</string>
+    <string name="zadajte_email">Zadajte email</string>
+    <string name="username">Username:</string>
+    <string name="zadajte_username">Zadajte username</string>
+    <string name="heslo">Heslo</string>
+    <string name="zadajte_heslo">Zadajte heslo</string>
+    <string name="zopakujte_heslo">Zopakujte heslo</string>
+    <string name="registruj_sa">Registruj sa</string>
+    <string name="prihlasit_sa">Prihlasit sa</string>
 </resources>
