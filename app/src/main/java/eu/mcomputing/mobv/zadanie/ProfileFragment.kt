@@ -9,30 +9,30 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import eu.mcomputing.mobv.zadanie.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private var mapView: MapView? = null
+    private var binding: FragmentProfileBinding? = null
 
-    //private lateinit var viewModel: FeedViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var mapView: MapView? = view.findViewById(R.id.mapView)
-        mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS)
+        /*var mapView: MapView? = view.findViewById(R.id.mapView)
+        mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS)*/
 
-        view.findViewById<Button>(R.id.change_passwd_button).apply {
-            setOnClickListener {
+        binding = FragmentProfileBinding.bind(view).apply {
+            lifecycleOwner = viewLifecycleOwner
+        }.also { bnd ->
+
+            var mapView: MapView? = bnd.mapView
+            mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS)
+
+            bnd.changePasswdButton.setOnClickListener {
                 it.findNavController().navigate(R.id.action_to_changePassword)
             }
         }
-
-        /*viewModel = ViewModelProvider(requireActivity())[FeedViewModel::class.java]
-
-        viewModel.feed_items.observe(viewLifecycleOwner) { items ->
-            // Tu môžete aktualizovať UI podľa hodnoty stringValue
-            Log.d("Profile", "prvky su $items")
-        }*/
 
     }
 }
