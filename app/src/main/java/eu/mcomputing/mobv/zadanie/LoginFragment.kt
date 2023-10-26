@@ -37,14 +37,15 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         binding = FragmentLoginBinding.bind(view).apply {
             lifecycleOwner = viewLifecycleOwner
+            model = viewModel
         }.also { bnd ->
-            bnd.submitButton.apply {
+            /*bnd.submitButton.apply {
                 setOnClickListener {
                     val username: String = bnd.editTextUsername.text.toString()
                     val password: String = bnd.editTextPassword.text.toString()
                     login(username, password)
                 }
-            }
+            }*/
 
             bnd.resetPasswdButton.apply {
                 setOnClickListener {
@@ -72,7 +73,4 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         super.onDestroyView()
     }
 
-    private fun login(username: String, password: String) {
-        viewModel.loginUser(username, password)
-    }
 }

@@ -3,6 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="model"
+            type="eu.mcomputing.mobv.zadanie.viewmodels.AuthViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
@@ -33,6 +36,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_text_username"
+                android:text="@={model.username}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -50,6 +54,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_text_password"
+                android:text="@={model.password}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -70,6 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="52dp"
             android:text="Prihlásiť sa"
+            android:onClick="@{()->model.loginUser()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
