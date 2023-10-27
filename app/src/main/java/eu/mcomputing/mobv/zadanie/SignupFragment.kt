@@ -32,6 +32,7 @@ class SignupFragment : Fragment(R.layout.fragment_signup) {
 
         binding = FragmentSignupBinding.bind(view).apply {
             lifecycleOwner = viewLifecycleOwner
+            model = viewModel
         }.also { bnd ->
             viewModel.registrationResult.observe(viewLifecycleOwner) {
                 if (it.isEmpty()) {
@@ -42,16 +43,6 @@ class SignupFragment : Fragment(R.layout.fragment_signup) {
                         it,
                         Snackbar.LENGTH_SHORT
                     ).show()
-                }
-            }
-
-            bnd.submitButton.apply {
-                setOnClickListener {
-                    viewModel.registerUser(
-                        bnd.editTextUsername.text.toString(),
-                        bnd.editTextEmail.text.toString(),
-                        bnd.editTextPassword.text.toString()
-                    )
                 }
             }
 

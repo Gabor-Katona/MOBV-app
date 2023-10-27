@@ -28,9 +28,13 @@ class AuthViewModel(private val dataRepository: DataRepository) : ViewModel() {
     val password = MutableLiveData<String>()
     val repeat_password = MutableLiveData<String>()
 
-    fun registerUser(username: String, email: String, password: String) {
+    fun registerUser() {
         viewModelScope.launch {
-            val result = dataRepository.apiRegisterUser(username, email, password)
+            val result = dataRepository.apiRegisterUser(
+                username.value ?: "",
+                email.value ?: "",
+                password.value ?: ""
+            )
 
             _registrationResult.postValue(result.first ?: "")
             _userResult.postValue(result.second)
