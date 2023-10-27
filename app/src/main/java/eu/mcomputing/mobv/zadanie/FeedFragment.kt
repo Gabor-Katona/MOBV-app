@@ -59,4 +59,9 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         }
 
     }
+
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
+    }
 }

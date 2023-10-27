@@ -21,6 +21,6 @@ class PasswordResetFragment2 : Fragment(R.layout.fragment_password_reset2) {
                 it.findNavController().navigate(R.id.action_to_loginFragment)
             }
         }
-        
+
     }
 }
