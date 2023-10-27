@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import eu.mcomputing.mobv.zadanie.data.PreferenceData
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
 import eu.mcomputing.mobv.zadanie.databinding.FragmentLoginBinding
 import eu.mcomputing.mobv.zadanie.viewmodels.AuthViewModel
@@ -54,15 +55,20 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             }
 
             viewModel.loginResult.observe(viewLifecycleOwner) {
-                if (it.isEmpty()) {
-                    requireView().findNavController().navigate(R.id.action_login_feed)
-                } else {
+                if (it.isNotEmpty()) {
                     Snackbar.make(
                         bnd.submitButton,
                         it,
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
+            }
+
+            viewModel.userResult.observe(viewLifecycleOwner) {
+                it?.let { user ->
+                    PreferenceData.getInstance().putUser(requireContext(), user)
+                    requireView().findNavController().navigate(R.id.action_login_feed)
+                } ?: PreferenceData.getInstance().putUser(requireContext(), null)
             }
 
         }
