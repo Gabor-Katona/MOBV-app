@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="model"
+            type="eu.mcomputing.mobv.zadanie.viewmodels.ProfileViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,6 +21,7 @@
             android:layout_marginEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:src="@{model.userResult.photo}"
             tools:src="@tools:sample/avatars" />
 
         <TextView
@@ -37,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="30dp"
-            android:text="Gabor"
+            android:text="@{model.userResult.username}"
             app:layout_constraintStart_toEndOf="@+id/text_label_name"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
             android:layout_marginTop="16dp"
-            android:text="myemail@gmail.com"
+            android:text="email@my.com"
             app:layout_constraintStart_toEndOf="@+id/text_label_email"
             app:layout_constraintTop_toBottomOf="@+id/text_name" />
 
@@ -66,10 +69,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="8dp"
             android:text="Zaznamenávania okruhu"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_label_email"
+            app:layout_constraintTop_toBottomOf="@id/load_profile_btn"
             tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         <EditText
@@ -97,11 +100,11 @@
             android:id="@+id/change_passwd_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
             android:text="Zmeniť heslo"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.644"
+
             app:layout_constraintStart_toEndOf="@+id/editTextTime"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
@@ -110,7 +113,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toTopOf="@+id/bottom_bar"
             app:layout_constraintEnd_toEndOf="parent"
@@ -125,8 +128,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/load_profile_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="11dp"
+            android:text="Načítaj profil"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/text_label_email" />
+
+        <Button
+            android:id="@+id/logout_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:text="Odhlásiť sa"
+            app:layout_constraintStart_toEndOf="@+id/editTextTime"
+            app:layout_constraintTop_toBottomOf="@+id/change_passwd_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

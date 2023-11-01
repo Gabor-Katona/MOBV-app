@@ -11,3 +11,15 @@ data class LoginResponse(
     val access: String,
     val refresh: String
 )
+
+data class UserResponse(
+    val id: String,
+    val name: String,
+    val photo: String
+)
+
+data class RefreshTokenResponse(
+    val uid: String,
+    val access: String,
+    val refresh: String
+)

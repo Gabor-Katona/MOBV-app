@@ -10,3 +10,7 @@ data class UserLoginRequest(
     val name: String,
     val password: String
 )
+
+data class RefreshTokenRequest(
+    val refresh: String
+)
