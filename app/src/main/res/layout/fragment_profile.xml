@@ -64,16 +64,16 @@
             app:layout_constraintStart_toEndOf="@+id/text_label_email"
             app:layout_constraintTop_toBottomOf="@+id/text_name" />
 
-        <Switch
-            android:id="@+id/switch_circle"
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/location_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="Zaznamenávania okruhu"
+            android:text="Zaznamenávania okruhu "
+            android:checked="@={model.sharingLocation}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/load_profile_btn"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+            app:layout_constraintTop_toBottomOf="@id/load_profile_btn" />
 
         <EditText
             android:id="@+id/editTextTime"
@@ -94,7 +94,7 @@
             android:layout_marginTop="16dp"
             android:text="Čas zaznamenávania:"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switch_circle" />
+            app:layout_constraintTop_toBottomOf="@+id/location_switch" />
 
         <Button
             android:id="@+id/change_passwd_button"
