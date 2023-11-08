@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -21,10 +23,10 @@ import eu.mcomputing.mobv.zadanie.data.api.DataRepository
 import eu.mcomputing.mobv.zadanie.databinding.FragmentProfileBinding
 import eu.mcomputing.mobv.zadanie.viewmodels.ProfileViewModel
 
-class ProfileFragment : Fragment(R.layout.fragment_profile) {
+class ProfileFragment : Fragment() {
     private var mapView: MapView? = null
     private lateinit var viewModel: ProfileViewModel
-    private var binding: FragmentProfileBinding? = null
+    private lateinit var binding: FragmentProfileBinding
 
     private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
@@ -38,6 +40,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     fun hasPermissions(context: Context) = PERMISSIONS_REQUIRED.all {
         ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +66,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         /*var mapView: MapView? = view.findViewById(R.id.mapView)
         mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS)*/
 
-        binding = FragmentProfileBinding.bind(view).apply {
+        binding.apply {
             lifecycleOwner = viewLifecycleOwner
             model = viewModel
         }.also { bnd ->

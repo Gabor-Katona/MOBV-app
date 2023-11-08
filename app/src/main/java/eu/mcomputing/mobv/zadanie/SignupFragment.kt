@@ -1,7 +1,9 @@
 package eu.mcomputing.mobv.zadanie
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -15,9 +17,9 @@ import eu.mcomputing.mobv.zadanie.data.api.DataRepository
 import eu.mcomputing.mobv.zadanie.databinding.FragmentSignupBinding
 import eu.mcomputing.mobv.zadanie.viewmodels.AuthViewModel
 
-class SignupFragment : Fragment(R.layout.fragment_signup) {
+class SignupFragment : Fragment() {
     private lateinit var viewModel: AuthViewModel
-    private var binding: FragmentSignupBinding? = null
+    private lateinit var binding: FragmentSignupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,10 +31,18 @@ class SignupFragment : Fragment(R.layout.fragment_signup) {
         })[AuthViewModel::class.java]
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSignupBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = FragmentSignupBinding.bind(view).apply {
+        binding.apply {
             lifecycleOwner = viewLifecycleOwner
             model = viewModel
         }.also { bnd ->

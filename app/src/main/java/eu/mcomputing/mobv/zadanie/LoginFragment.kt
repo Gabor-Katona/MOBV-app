@@ -2,7 +2,9 @@ package eu.mcomputing.mobv.zadanie
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
@@ -18,9 +20,9 @@ import eu.mcomputing.mobv.zadanie.data.api.DataRepository
 import eu.mcomputing.mobv.zadanie.databinding.FragmentLoginBinding
 import eu.mcomputing.mobv.zadanie.viewmodels.AuthViewModel
 
-class LoginFragment : Fragment(R.layout.fragment_login) {
+class LoginFragment : Fragment() {
     private lateinit var viewModel: AuthViewModel
-    private var binding: FragmentLoginBinding? = null
+    private lateinit var binding: FragmentLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,10 +35,18 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding = FragmentLoginBinding.bind(view).apply {
+        binding.apply {
             lifecycleOwner = viewLifecycleOwner
             model = viewModel
         }.also { bnd ->
@@ -72,11 +82,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             }
 
         }
-    }
-
-    override fun onDestroyView() {
-        binding = null
-        super.onDestroyView()
     }
 
 }
