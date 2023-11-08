@@ -2,16 +2,17 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs")
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "eu.mcomputing.mobv.zadanie"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "eu.mcomputing.mobv.zadanie"
         minSdk = 28
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -65,4 +66,12 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10")
 
     implementation("com.google.android.gms:play-services-location:18.0.0")
+
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    val room_version = "2.6.0"
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 }

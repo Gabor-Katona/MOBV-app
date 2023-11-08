@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import eu.mcomputing.mobv.zadanie.data.db.entities.UserEntity
+import eu.mcomputing.mobv.zadanie.utils.ItemDiffCallback
 
 data class MyItem(val id: Int, val imageResource: Int, val text: String){
     override fun equals(other: Any?): Boolean {
@@ -32,7 +34,7 @@ data class MyItem(val id: Int, val imageResource: Int, val text: String){
 }
 
 class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
-    private var items: List<MyItem> = listOf()
+    private var items: List<UserEntity> = listOf()
 
     // ViewHolder poskytuje odkazy na zobrazenia v každej položke
     //class MyViewHolder(val imageView: ImageView, val textView: TextView) : RecyclerView.ViewHolder(imageView, textView)
@@ -50,13 +52,7 @@ class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     // Táto metóda prepojí dáta s ViewHolderom
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.imageView.setImageResource(items[position].imageResource)
-        holder.textView.text = items[position].text
-
-        holder.textView.setOnClickListener {
-            Log.d("Click", "clicked $position")
-            updateItems(items.subList(position , items.size))
-        }
+        holder.itemView.findViewById<TextView>(R.id.item_text).text = items[position].name
     }
 
     // Vracia počet položiek v zozname
@@ -67,8 +63,8 @@ class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
         notifyDataSetChanged()
     }*/
 
-    fun updateItems(newItems: List<MyItem>) {
-        val diffCallback = MyItemDiffCallback(items, newItems)
+    fun updateItems(newItems: List<UserEntity>) {
+        val diffCallback = ItemDiffCallback(items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
         items = newItems

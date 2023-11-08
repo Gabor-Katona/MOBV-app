@@ -23,3 +23,13 @@ data class RefreshTokenResponse(
     val access: String,
     val refresh: String
 )
+
+data class GeofenceListResponse(
+    val uid: String,
+    val name: String,
+    val updated: String,
+    val lat: Double,
+    val lon: Double,
+    val radius: Double,
+    val photo: String
+)

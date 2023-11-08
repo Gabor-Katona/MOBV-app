@@ -5,9 +5,11 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import eu.mcomputing.mobv.zadanie.data.api.DataRepository
 import eu.mcomputing.mobv.zadanie.databinding.FragmentFeedBinding
 import eu.mcomputing.mobv.zadanie.viewmodels.FeedViewModel
 
@@ -19,7 +21,11 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         super.onCreate(savedInstanceState)
 
         // Inicializácia ViewModel
-        viewModel = ViewModelProvider(requireActivity())[FeedViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return FeedViewModel(DataRepository.getInstance(requireContext())) as T
+            }
+        })[FeedViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -30,31 +36,24 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         }.also { bnd ->
 
             // this creates a vertical layout Manager
-            bnd.recyclerView.layoutManager = LinearLayoutManager(context)
+            bnd.feedRecyclerview.layoutManager = LinearLayoutManager(context)
 
             // Setting the Adapter with the recyclerview
             val feedAdapter = MyAdapter()
-            bnd.recyclerView.adapter = feedAdapter
-
-            /*// ArrayList of class ItemsViewModel
-            val data = ArrayList<MyItem>()
-
-            // This loop will create 10 Views containing
-            // the image with the count of view
-            for (i in 1..10) {
-                data.add(MyItem(i, R.drawable.ic_action_map, "Item " + i))
-            }
-
-            viewModel.updateItems(data)*/
+            bnd.feedRecyclerview.adapter = feedAdapter
 
             // Pozorovanie zmeny hodnoty
             viewModel.feed_items.observe(viewLifecycleOwner) { items ->
                 Log.d("FeedFragment", "nove hodnoty $items")
-                feedAdapter.updateItems(items)
+                feedAdapter.updateItems(items ?: emptyList())
             }
 
-            bnd.btnGenerate.setOnClickListener {
+            bnd.pullRefresh.setOnRefreshListener {
                 viewModel.updateItems()
+            }
+
+            viewModel.loading.observe(viewLifecycleOwner) {
+                bnd.pullRefresh.isRefreshing = it
             }
         }
 
