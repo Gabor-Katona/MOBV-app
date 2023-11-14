@@ -14,3 +14,9 @@ data class UserLoginRequest(
 data class RefreshTokenRequest(
     val refresh: String
 )
+
+data class GeofenceUpdateRequest(
+    val lat: Double,
+    val lon: Double,
+    val radius: Double
+)

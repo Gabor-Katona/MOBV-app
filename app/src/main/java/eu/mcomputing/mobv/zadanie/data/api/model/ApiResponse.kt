@@ -44,3 +44,7 @@ data class GeofenceMeResponse(
     val lon: Double,
     val radius: Double
 )
+
+data class GeofenceUpdateResponse(
+    val success: String
+)

@@ -14,10 +14,16 @@ import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
+import eu.mcomputing.mobv.zadanie.data.api.DataRepository
+import eu.mcomputing.mobv.zadanie.data.db.entities.GeofenceEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        Log.d("GeofenceBroadcastReceiver", "start")
         if (intent == null) {
             // no geofence exit
             Log.e("GeofenceBroadcastReceiver", "error 1")
@@ -51,13 +57,14 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 Log.e("GeofenceBroadcastReceiver", "error 4")
                 return
             }
+            Log.d("GeofenceBroadcastReceiver", "event")
             setupGeofence(triggeringLocation, context)
         }
     }
 
     private fun setupGeofence(location: Location, context: Context) {
 
-        val geofencingClient = LocationServices.getGeofencingClient(context.applicationContext)
+        val geofencingClient = LocationServices.getGeofencingClient(context)
 
         // creating geofence with position
         val geofence = Geofence.Builder()
@@ -92,8 +99,22 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         // adding Geofences to LocationServices.getGeofencingClient
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
             addOnSuccessListener {
-                // Geofences boli úspešne pridané
-                Log.d("GeofenceBroadcastReceiver", "novy geofence vytvoreny")
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        // you code here
+                        Log.d("GeofenceBroadcastReceiver", "novy geofence vytvoreny")
+                        DataRepository.getInstance(context).insertGeofence(
+                            GeofenceEntity(
+                                location.latitude,
+                                location.longitude,
+                                100.0
+                            )
+                        )
+                    } catch (e: Exception) {
+                        Log.e("GeofenceBroadcastReceiver", "error 7")
+                    }
+                }
             }
             addOnFailureListener {
                 // Chyba pri pridaní geofences

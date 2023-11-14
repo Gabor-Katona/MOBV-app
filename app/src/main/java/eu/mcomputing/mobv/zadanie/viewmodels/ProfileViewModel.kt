@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
+import eu.mcomputing.mobv.zadanie.data.db.entities.GeofenceEntity
 import eu.mcomputing.mobv.zadanie.data.model.User
 import kotlinx.coroutines.launch
 
@@ -26,6 +27,18 @@ class ProfileViewModel(private val dataRepository: DataRepository) : ViewModel()
 
             _profileResult.postValue(result.first ?: "")
             _userResult.postValue(result.second)
+        }
+    }
+
+    fun updateGeofence(lat: Double, lon: Double, radius: Double) {
+        viewModelScope.launch {
+            dataRepository.insertGeofence(GeofenceEntity(lat, lon, radius))
+        }
+    }
+
+    fun removeGeofence() {
+        viewModelScope.launch {
+            dataRepository.removeGeofence()
         }
     }
 }

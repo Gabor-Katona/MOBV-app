@@ -5,10 +5,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import eu.mcomputing.mobv.zadanie.data.db.entities.GeofenceEntity
 import eu.mcomputing.mobv.zadanie.data.db.entities.UserEntity
 
 @Dao
 interface DbDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGeofence(item: GeofenceEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserItems(items: List<UserEntity>)
