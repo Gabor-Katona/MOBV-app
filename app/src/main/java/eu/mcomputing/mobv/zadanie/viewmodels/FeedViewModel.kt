@@ -19,7 +19,7 @@ class FeedViewModel(private val repository: DataRepository) : ViewModel() {
     val feed_items: LiveData<List<UserEntity>?> =
         liveData {
             loading.postValue(true)
-            repository.apiListGeofence()
+            repository.apiGeofenceUsers()
             loading.postValue(false)
             emitSource(repository.getUsers())
         }
@@ -33,7 +33,7 @@ class FeedViewModel(private val repository: DataRepository) : ViewModel() {
     fun updateItems() {
         viewModelScope.launch {
             loading.postValue(true)
-            _message.postValue(Evento(repository.apiListGeofence()))
+            _message.postValue(Evento(repository.apiGeofenceUsers()))
             loading.postValue(false)
         }
     }

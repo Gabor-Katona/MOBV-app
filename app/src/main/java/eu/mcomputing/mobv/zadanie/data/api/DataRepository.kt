@@ -120,17 +120,21 @@ class DataRepository private constructor(
 
             if (response.isSuccessful) {
                 response.body()?.let {
-                    return Pair(
-                        "",
-                        User(
-                            it.name,
-                            "",
-                            it.id,
-                            "",
-                            "",
-                            it.photo
+                    val user = User(it.name, "", it.id, "", "", it.photo)
+                    cache.insertUserItems(
+                        listOf(
+                            UserEntity(
+                                user.id,
+                                user.username,
+                                "",
+                                0.0,
+                                0.0,
+                                0.0,
+                                ""
+                            )
                         )
                     )
+                    return Pair("", user)
                 }
             }
             // in case that assess token is expired AuthInterceptor handles it
@@ -145,7 +149,7 @@ class DataRepository private constructor(
         return Pair("Fatal error. Failed to load user.", null)
     }
 
-    suspend fun apiListGeofence(): String {
+    suspend fun apiGeofenceUsers(): String {
         try {
             val response = service.listGeofence()
             /*val user = UserEntity(
@@ -155,26 +159,33 @@ class DataRepository private constructor(
             cache.insertUserItems(userList)*/
 
             if (response.isSuccessful) {
-                response.body()?.let {
-                    val users = it.map {
+                response.body()?.let { resp ->
+                    val users = resp.list.map {
                         UserEntity(
-                            it.uid, it.name, it.updated,
-                            it.lat, it.lon, it.radius, it.photo
+                            it.uid,
+                            it.name,
+                            it.updated,
+                            resp.me.lat,
+                            resp.me.lon,
+                            it.radius,
+                            it.photo
                         )
                     }
+
                     cache.insertUserItems(users)
+
                     return ""
                 }
             }
 
-            return "Failed to load users"
+            return "Failed to load user"
         } catch (ex: IOException) {
             ex.printStackTrace()
-            return "Check internet connection. Failed to load users."
+            return "Check internet connection. Failed to load user."
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
-        return "Fatal error. Failed to load users."
+        return "Fatal error. Failed to load user."
     }
 
     fun getUsers() = cache.getUsers()

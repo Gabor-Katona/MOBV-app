@@ -4,7 +4,7 @@ import android.content.Context
 import eu.mcomputing.mobv.zadanie.config.AppConfig
 import eu.mcomputing.mobv.zadanie.data.api.helper.AuthInterceptor
 import eu.mcomputing.mobv.zadanie.data.api.helper.TokenAuthenticator
-import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceListResponse
+import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceResponse
 import eu.mcomputing.mobv.zadanie.data.api.model.LoginResponse
 import eu.mcomputing.mobv.zadanie.data.api.model.RefreshTokenRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.RefreshTokenResponse
@@ -51,7 +51,7 @@ interface ApiService {
     ): Call<RefreshTokenResponse>
 
     @GET("geofence/list.php")
-    suspend fun listGeofence(): Response<List<GeofenceListResponse>>
+    suspend fun listGeofence(): Response<GeofenceResponse>
 
     companion object{
         fun create(context: Context): ApiService {
