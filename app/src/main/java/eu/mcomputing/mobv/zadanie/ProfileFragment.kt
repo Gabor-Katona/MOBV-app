@@ -156,44 +156,17 @@ class ProfileFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private fun turnOnSharing() {
         Log.d("ProfileFragment", "turnOnSharing")
+        
 
-        /*
-        Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-         */
-
-        if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            Log.d("ProfileFragment", "permissions 1")
-            binding.locationSwitch.isChecked = false
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-
-
-
-        }
-        if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            Log.d("ProfileFragment", "permissions 2")
-            binding.locationSwitch.isChecked = false
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-
-        }
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED ){
-            Log.d("ProfileFragment", "permissions 3")
-            binding.locationSwitch.isChecked = false
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            return
-
-        }
-
-        /*if (!hasPermissions(requireContext())) {
+        if (!hasPermissions(requireContext())) {
             Log.d("ProfileFragment", "no permissions")
             // no permission for location
             binding.locationSwitch.isChecked = false
-            requestPermissionLauncher.launch(PERMISSIONS_REQUIRED)
+            for (p in PERMISSIONS_REQUIRED) {
+                requestPermissionLauncher.launch(p)
+            }
             return
-        }*/
+        }
 
         PreferenceData.getInstance().putSharing(requireContext(), true)
 
