@@ -159,6 +159,7 @@ class DataRepository private constructor(
                 425.52, 75.25, 100.0, "link")
             val userList = listOf(user)
             cache.insertUserItems(userList)*/
+            Log.d("DataRepository", "apiGeofenceUsers")
 
             if (response.isSuccessful) {
                 response.body()?.let { resp ->

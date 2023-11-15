@@ -11,7 +11,10 @@ class LocalCache(private val dao: DbDao) {
     }
 
     suspend fun insertUserItems(items: List<UserEntity>) {
-        dao.insertUserItems(items)
+        dao.deleteUserItems()
+        if (items.isNotEmpty()) {
+            dao.insertUserItems(items)
+        }
     }
 
     fun getUserItem(uid: String): LiveData<UserEntity?> {

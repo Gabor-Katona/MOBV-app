@@ -20,6 +20,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
@@ -31,6 +36,8 @@ import eu.mcomputing.mobv.zadanie.data.PreferenceData
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
 import eu.mcomputing.mobv.zadanie.databinding.FragmentProfileBinding
 import eu.mcomputing.mobv.zadanie.viewmodels.ProfileViewModel
+import eu.mcomputing.mobv.zadanie.workers.MyWorker
+import java.util.concurrent.TimeUnit
 
 class ProfileFragment : Fragment() {
     private var mapView: MapView? = null
@@ -232,6 +239,8 @@ class ProfileFragment : Fragment() {
                 // Geofences boli úspešne pridané
                 Log.d("ProfileFragment", "geofence vytvoreny")
                 viewModel.updateGeofence(location.latitude, location.longitude, 100.0)
+
+                runWorker()
             }
             addOnFailureListener {
                 // Chyba pri pridaní geofences
@@ -250,6 +259,32 @@ class ProfileFragment : Fragment() {
         Log.d("ProfileFragment", "geofence zruseny")
         val geofencingClient = LocationServices.getGeofencingClient(requireActivity())
         geofencingClient.removeGeofences(listOf("my-geofence"))
+
         viewModel.removeGeofence()
+        cancelWorker()
+    }
+
+    private fun runWorker() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val repeatingRequest = PeriodicWorkRequestBuilder<MyWorker>(
+            15, TimeUnit.MINUTES, // repeatInterval
+            5, TimeUnit.MINUTES // flexInterval
+        )
+            .setConstraints(constraints)
+            .addTag("myworker-tag")
+            .build()
+
+        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+            "myworker",
+            ExistingPeriodicWorkPolicy.KEEP, // or REPLACE
+            repeatingRequest
+        )
+    }
+
+    private fun cancelWorker() {
+        WorkManager.getInstance(requireContext()).cancelUniqueWork("myworker")
     }
 }
