@@ -23,6 +23,7 @@ import androidx.navigation.findNavController
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.gms.location.Geofence
@@ -45,11 +46,12 @@ class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
 
     private val PERMISSIONS_REQUIRED = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+        Build.VERSION.SDK_INT >= 33 -> {// android 13m
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                Manifest.permission.POST_NOTIFICATIONS
             )
         }
 
@@ -282,6 +284,10 @@ class ProfileFragment : Fragment() {
             ExistingPeriodicWorkPolicy.KEEP, // or REPLACE
             repeatingRequest
         )
+
+        /*val myWorkRequest = OneTimeWorkRequestBuilder<MyWorker>().build()
+
+        WorkManager.getInstance(requireContext()).enqueue(myWorkRequest)*/
     }
 
     private fun cancelWorker() {

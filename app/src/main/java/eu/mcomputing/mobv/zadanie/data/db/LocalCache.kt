@@ -25,6 +25,8 @@ class LocalCache(private val dao: DbDao) {
         return dao.getUsers()
     }
 
+    suspend fun getUsersList(): List<UserEntity>? = dao.getUsersList()
+
     suspend fun deleteUserItems() {
         dao.deleteUserItems()
     }
