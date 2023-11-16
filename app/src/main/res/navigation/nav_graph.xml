@@ -84,8 +84,9 @@
         tools:layout="@layout/fragment_password_reset">
 
         <action
-            android:id="@+id/action_to_passwordResetFragment2"
-            app:destination="@id/passwordResetFragment2" />
+            android:id="@+id/action_to_loginFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/loginFragment" />
     </fragment>
 
     <fragment
@@ -93,9 +94,6 @@
         android:name="eu.mcomputing.mobv.zadanie.PasswordResetFragment2"
         android:label="ProfileFragment"
         tools:layout="@layout/fragment_password_reset2">
-        <action
-            android:id="@+id/action_to_loginFragment"
-            app:destination="@id/loginFragment" />
     </fragment>
 
     <fragment

@@ -48,3 +48,8 @@ data class GeofenceMeResponse(
 data class GeofenceUpdateResponse(
     val success: String
 )
+
+data class PasswordChangeResponse(
+    val status: String,
+    val message: String
+)

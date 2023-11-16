@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import eu.mcomputing.mobv.zadanie.config.AppConfig
 import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceUpdateRequest
+import eu.mcomputing.mobv.zadanie.data.api.model.PasswordResetRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.RefreshTokenRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.UserLoginRequest
 import eu.mcomputing.mobv.zadanie.data.model.User
@@ -236,6 +237,34 @@ class DataRepository private constructor(
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
+    }
+
+    suspend fun apiResetPassword(email: String): String {
+        if (email.isEmpty()) {
+            return "Username can not be empty"
+        }
+
+        try {
+            val response = service.resetPassword(PasswordResetRequest(email))
+
+            if (response.isSuccessful) {
+                response.body()?.let { json_response ->
+                    if (json_response.status == "failure") {
+                        return json_response.message
+                    }
+                    return "Check your email to reset password"
+
+                }
+            }
+            return "Failed to reset password"
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            return "Check internet connection. Failed to reset password."
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
+        return "Fatal error. Failed to reset password."
     }
 
 }

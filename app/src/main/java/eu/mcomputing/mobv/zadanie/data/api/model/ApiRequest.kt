@@ -20,3 +20,7 @@ data class GeofenceUpdateRequest(
     val lon: Double,
     val radius: Double
 )
+
+data class PasswordResetRequest(
+    val email: String
+)

@@ -8,6 +8,8 @@ import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceResponse
 import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceUpdateRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceUpdateResponse
 import eu.mcomputing.mobv.zadanie.data.api.model.LoginResponse
+import eu.mcomputing.mobv.zadanie.data.api.model.PasswordChangeResponse
+import eu.mcomputing.mobv.zadanie.data.api.model.PasswordResetRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.RefreshTokenRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.RefreshTokenResponse
 import eu.mcomputing.mobv.zadanie.data.api.model.RegistrationResponse
@@ -61,6 +63,16 @@ interface ApiService {
 
     @DELETE("geofence/update.php")
     suspend fun deleteGeofence(): Response<GeofenceUpdateResponse>
+
+    @POST("user/reset.php")
+    suspend fun resetPassword(
+        @Body refreshInfo: PasswordResetRequest
+    ): Response<PasswordChangeResponse>
+
+    /*@POST("user/password.php")
+    suspend fun changePassword(
+        @Body refreshInfo: RefreshTokenRequest
+    ): Response<RefreshTokenResponse>*/
 
     companion object{
         fun create(context: Context): ApiService {
