@@ -49,7 +49,11 @@ data class GeofenceUpdateResponse(
     val success: String
 )
 
-data class PasswordChangeResponse(
+data class PasswordResetResponse(
     val status: String,
     val message: String
+)
+
+data class PasswordChangeResponse(
+    val status: String
 )

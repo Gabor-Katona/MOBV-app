@@ -1,14 +1,15 @@
 package eu.mcomputing.mobv.zadanie.data.api
 
 import android.content.Context
-import eu.mcomputing.mobv.zadanie.config.AppConfig
 import eu.mcomputing.mobv.zadanie.data.api.helper.AuthInterceptor
 import eu.mcomputing.mobv.zadanie.data.api.helper.TokenAuthenticator
 import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceResponse
 import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceUpdateRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceUpdateResponse
 import eu.mcomputing.mobv.zadanie.data.api.model.LoginResponse
+import eu.mcomputing.mobv.zadanie.data.api.model.PasswordChangeRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.PasswordChangeResponse
+import eu.mcomputing.mobv.zadanie.data.api.model.PasswordResetResponse
 import eu.mcomputing.mobv.zadanie.data.api.model.PasswordResetRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.RefreshTokenRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.RefreshTokenResponse
@@ -24,8 +25,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.HeaderMap
-import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -67,12 +66,12 @@ interface ApiService {
     @POST("user/reset.php")
     suspend fun resetPassword(
         @Body refreshInfo: PasswordResetRequest
-    ): Response<PasswordChangeResponse>
+    ): Response<PasswordResetResponse>
 
-    /*@POST("user/password.php")
+    @POST("user/password.php")
     suspend fun changePassword(
-        @Body refreshInfo: RefreshTokenRequest
-    ): Response<RefreshTokenResponse>*/
+        @Body refreshInfo: PasswordChangeRequest
+    ): Response<PasswordChangeResponse>
 
     companion object{
         fun create(context: Context): ApiService {

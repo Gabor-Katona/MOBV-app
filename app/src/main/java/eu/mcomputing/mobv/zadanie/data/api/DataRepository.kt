@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import eu.mcomputing.mobv.zadanie.config.AppConfig
 import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceUpdateRequest
+import eu.mcomputing.mobv.zadanie.data.api.model.PasswordChangeRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.PasswordResetRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.RefreshTokenRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.UserLoginRequest
@@ -241,7 +242,7 @@ class DataRepository private constructor(
 
     suspend fun apiResetPassword(email: String): String {
         if (email.isEmpty()) {
-            return "Username can not be empty"
+            return "Email can not be empty"
         }
 
         try {
@@ -265,6 +266,34 @@ class DataRepository private constructor(
         }
 
         return "Fatal error. Failed to reset password."
+    }
+
+    suspend fun apiChangePassword(oldPassword: String, newPassword: String): String {
+        if (oldPassword.isEmpty()) {
+            return "Old password can not be empty"
+        }
+        if (newPassword.isEmpty()) {
+            return "New password can not be empty"
+        }
+
+        try {
+            val response = service.changePassword(PasswordChangeRequest(oldPassword, newPassword))
+
+            if (response.isSuccessful) {
+                response.body()?.let { json_response ->
+                    return "Password successfully changed"
+
+                }
+            }
+            return "Failed to change password"
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            return "Check internet connection. Failed to change password."
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
+        return "Fatal error. Failed to change password."
     }
 
 }
