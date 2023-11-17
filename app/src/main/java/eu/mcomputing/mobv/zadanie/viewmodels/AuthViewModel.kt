@@ -50,4 +50,11 @@ class AuthViewModel(private val dataRepository: DataRepository) : ViewModel() {
             _userResult.postValue(result.second)
         }
     }
+
+    fun clearUserResult() {
+        _userResult.value = null
+        username.postValue("")
+        email.postValue("")
+        password.postValue("")
+    }
 }
