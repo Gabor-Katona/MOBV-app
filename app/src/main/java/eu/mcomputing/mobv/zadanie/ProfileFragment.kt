@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -152,6 +153,24 @@ class ProfileFragment : Fragment() {
                 PreferenceData.getInstance().clearData(requireContext())
                 authViewModel.clearUserResult()
                 it.findNavController().navigate(R.id.action_profile_intro)
+            }
+
+            // Registers a photo picker activity launcher in single-select mode.
+            val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                // Callback is invoked after the user selects a media item or closes the
+                // photo picker.
+                if (uri != null) {
+                    Log.d("PhotoPicker", "Selected URI: $uri")
+                    bnd.imageView2.setImageURI(uri)
+                } else {
+                    Log.d("PhotoPicker", "No media selected")
+                }
+            }
+            // specific MIME type
+            val mimeType = "image/jpeg"
+
+            bnd.addImageBtn.setOnClickListener {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.SingleMimeType(mimeType)))
             }
 
             bnd.locationSwitch.isChecked = PreferenceData.getInstance().getSharing(requireContext())

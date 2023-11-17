@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,25 +44,6 @@
             app:layout_constraintStart_toEndOf="@+id/text_label_name"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/text_label_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Email:"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_label_name" />
-
-        <TextView
-            android:id="@+id/text_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="16dp"
-            android:text="email@my.com"
-            app:layout_constraintStart_toEndOf="@+id/text_label_email"
-            app:layout_constraintTop_toBottomOf="@+id/text_name" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/location_switch"
@@ -73,7 +54,7 @@
             android:text="Zaznamenávania okruhu "
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/load_profile_btn" />
+            app:layout_constraintTop_toBottomOf="@id/add_image_btn" />
 
         <EditText
             android:id="@+id/editTextTime"
@@ -139,7 +120,16 @@
             android:layout_marginTop="11dp"
             android:text="Načítaj profil"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_label_email" />
+            app:layout_constraintTop_toBottomOf="@+id/text_name" />
+
+        <Button
+            android:id="@+id/add_image_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Zmeniť fotku"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/load_profile_btn" />
 
         <Button
             android:id="@+id/logout_btn"
