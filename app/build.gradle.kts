@@ -76,4 +76,6 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
 
     implementation("androidx.work:work-runtime-ktx:2.8.1")
+
+    implementation("com.squareup.picasso:picasso:2.8")
 }

@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -33,6 +34,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.squareup.picasso.Picasso
 import eu.mcomputing.mobv.zadanie.broadcastReceivers.GeofenceBroadcastReceiver
 import eu.mcomputing.mobv.zadanie.data.PreferenceData
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
@@ -168,6 +170,13 @@ class ProfileFragment : Fragment() {
             }
             // specific MIME type
             val mimeType = "image/jpeg"
+
+            
+            Picasso.get()
+                .load("https://square.github.io/picasso/static/debug.png")
+                .placeholder(R.drawable.ic_action_account)
+                .into(bnd.imageView2)
+
 
             bnd.addImageBtn.setOnClickListener {
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.SingleMimeType(mimeType)))
