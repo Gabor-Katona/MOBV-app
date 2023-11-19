@@ -57,3 +57,9 @@ data class PasswordResetResponse(
 data class PasswordChangeResponse(
     val status: String
 )
+
+data class PictureUploadResponse(
+    val id: Int,
+    val name: String,
+    val photo: String
+)

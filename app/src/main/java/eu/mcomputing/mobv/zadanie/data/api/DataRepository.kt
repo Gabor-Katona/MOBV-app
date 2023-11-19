@@ -1,24 +1,29 @@
 package eu.mcomputing.mobv.zadanie.data.api
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
-import eu.mcomputing.mobv.zadanie.config.AppConfig
 import eu.mcomputing.mobv.zadanie.data.api.model.GeofenceUpdateRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.PasswordChangeRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.PasswordResetRequest
-import eu.mcomputing.mobv.zadanie.data.api.model.RefreshTokenRequest
 import eu.mcomputing.mobv.zadanie.data.api.model.UserLoginRequest
-import eu.mcomputing.mobv.zadanie.data.model.User
 import eu.mcomputing.mobv.zadanie.data.api.model.UserRegistrationRequest
 import eu.mcomputing.mobv.zadanie.data.db.AppRoomDatabase
 import eu.mcomputing.mobv.zadanie.data.db.LocalCache
 import eu.mcomputing.mobv.zadanie.data.db.entities.GeofenceEntity
 import eu.mcomputing.mobv.zadanie.data.db.entities.UserEntity
+import eu.mcomputing.mobv.zadanie.data.model.User
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import java.io.IOException
+
 
 class DataRepository private constructor(
     private val service: ApiService,
-    private val cache: LocalCache
+    private val cache: LocalCache,
+    private val pictureService: ImageApiService,
 ) {
     companion object {
         const val TAG = "DataRepository"
@@ -32,7 +37,8 @@ class DataRepository private constructor(
                 INSTANCE
                     ?: DataRepository(
                         ApiService.create(context),
-                        LocalCache(AppRoomDatabase.getInstance(context).appDao())
+                        LocalCache(AppRoomDatabase.getInstance(context).appDao()),
+                        ImageApiService.create(context)
                     ).also { INSTANCE = it }
             }
     }
@@ -294,6 +300,38 @@ class DataRepository private constructor(
         }
 
         return "Fatal error. Failed to change password."
+    }
+
+    suspend fun apiUploadProfilePicture(picturePath: String): String {
+        if (picturePath.isEmpty()) {
+            return "Picture path can not be empty"
+        }
+
+        //val file = File("/storage/emulated/0/Download/man-avatar-profile-picture-vector-illustration_268834-538.jpg")
+        val file = File(picturePath)
+        val requestFile = file.asRequestBody(MultipartBody.FORM)
+
+        // MultipartBody.Part is used to send also the actual file name
+        val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
+
+        try {
+            val response = pictureService.uploadProfilePicture(body)
+
+            if (response.isSuccessful) {
+                response.body()?.let { json_response ->
+                    Log.d("DataRepository", json_response.toString())
+                    return "Picture successfully uploaded"
+                }
+            }
+            return "Failed to upload picture"
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            return "Check internet connection. Failed to upload picture."
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
+        return "Fatal error. Failed to upload picture."
     }
 
 }

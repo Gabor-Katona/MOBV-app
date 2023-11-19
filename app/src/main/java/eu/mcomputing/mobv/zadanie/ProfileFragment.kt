@@ -7,8 +7,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.FileUtils
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +20,7 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -42,6 +46,12 @@ import eu.mcomputing.mobv.zadanie.databinding.FragmentProfileBinding
 import eu.mcomputing.mobv.zadanie.viewmodels.AuthViewModel
 import eu.mcomputing.mobv.zadanie.viewmodels.ProfileViewModel
 import eu.mcomputing.mobv.zadanie.workers.MyWorker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
 class ProfileFragment : Fragment() {
@@ -157,28 +167,50 @@ class ProfileFragment : Fragment() {
                 it.findNavController().navigate(R.id.action_profile_intro)
             }
 
+            val scope = CoroutineScope(Dispatchers.Main)
+
             // Registers a photo picker activity launcher in single-select mode.
             val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                // Callback is invoked after the user selects a media item or closes the
-                // photo picker.
+                // Callback is invoked after the user selects a media item or closes the photo picker.
                 if (uri != null) {
+                    // persist media file access
+                    val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    requireContext().contentResolver.takePersistableUriPermission(uri, flag)
+
                     Log.d("PhotoPicker", "Selected URI: $uri")
                     bnd.imageView2.setImageURI(uri)
+
+                    val res = getRealPathFromURI(uri, requireContext())
+                    scope.launch {
+                        val response = res?.let {
+                            DataRepository.getInstance(requireContext()).apiUploadProfilePicture(
+                                it
+                            )
+                        }
+                        if (response != null) {
+                            Snackbar.make(
+                                bnd.addImageBtn,
+                                response,
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                 }
             }
-            // specific MIME type
-            val mimeType = "image/jpeg"
 
-            
             Picasso.get()
                 .load("https://square.github.io/picasso/static/debug.png")
                 .placeholder(R.drawable.ic_action_account)
                 .into(bnd.imageView2)
 
+            // specific MIME type
+            val mimeType = "image/jpeg"
 
             bnd.addImageBtn.setOnClickListener {
+                // pick image and run code in picker
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.SingleMimeType(mimeType)))
             }
 
@@ -194,6 +226,16 @@ class ProfileFragment : Fragment() {
 
         }
 
+    }
+
+    //From: https://nobanhasan.medium.com/get-picked-image-actual-path-android-11-12-180d1fa12692
+    private fun getRealPathFromURI(uri: Uri, context: Context): String? {
+        val returnCursor = context.contentResolver.query(uri, null, null, null, null)
+        val nameIndex =  returnCursor!!.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        returnCursor.moveToFirst()
+        val name = returnCursor.getString(nameIndex)
+        val file = File(context.filesDir, name)
+        return file.path
     }
 
     /**
