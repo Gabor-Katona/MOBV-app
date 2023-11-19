@@ -38,6 +38,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import eu.mcomputing.mobv.zadanie.broadcastReceivers.GeofenceBroadcastReceiver
 import eu.mcomputing.mobv.zadanie.data.PreferenceData
@@ -160,6 +162,16 @@ class ProfileFragment : Fragment() {
                 }
             }
 
+            viewModel.userResult.observe(viewLifecycleOwner) {
+
+                Picasso.get()
+                    .load("https://upload.mcomputing.eu/" + viewModel.userResult.value?.photo )
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .placeholder(R.drawable.ic_action_account)
+                    .into(bnd.imageView2)
+            }
+
             // logout and clear user data
             bnd.logoutBtn.setOnClickListener {
                 PreferenceData.getInstance().clearData(requireContext())
@@ -201,10 +213,10 @@ class ProfileFragment : Fragment() {
                 }
             }
 
-            Picasso.get()
+            /*Picasso.get()
                 .load("https://square.github.io/picasso/static/debug.png")
                 .placeholder(R.drawable.ic_action_account)
-                .into(bnd.imageView2)
+                .into(bnd.imageView2)*/
 
             // specific MIME type
             val mimeType = "image/jpeg"
