@@ -334,4 +334,26 @@ class DataRepository private constructor(
         return "Fatal error. Failed to upload picture."
     }
 
+    suspend fun apiDeleteProfilePicture(): Pair<String, Boolean?> {
+
+        try {
+            val response = pictureService.deleteProfilePicture()
+
+            if (response.isSuccessful) {
+                response.body()?.let { json_response ->
+                    Log.d("DataRepository", json_response.toString())
+                    return Pair("Picture successfully removed", true)
+                }
+            }
+            return Pair("Failed to remove picture", false)
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            return Pair("Check internet connection. Failed to remove picture.", false)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
+        return Pair("Fatal error. Failed to remove picture.", false)
+    }
+
 }

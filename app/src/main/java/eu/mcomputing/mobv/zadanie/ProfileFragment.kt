@@ -213,17 +213,26 @@ class ProfileFragment : Fragment() {
                 }
             }
 
-            /*Picasso.get()
-                .load("https://square.github.io/picasso/static/debug.png")
-                .placeholder(R.drawable.ic_action_account)
-                .into(bnd.imageView2)*/
-
             // specific MIME type
             val mimeType = "image/jpeg"
 
             bnd.addImageBtn.setOnClickListener {
                 // pick image and run code in picker
                 pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.SingleMimeType(mimeType)))
+            }
+
+            bnd.deleteImageBtn.setOnClickListener {
+                scope.launch {
+                    val response = DataRepository.getInstance(requireContext()).apiDeleteProfilePicture()
+                    if(response.second == true){
+                        bnd.imageView2.setImageResource(R.drawable.ic_action_account)
+                    }
+                    Snackbar.make(
+                        bnd.addImageBtn,
+                        response.first,
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
             }
 
             bnd.locationSwitch.isChecked = PreferenceData.getInstance().getSharing(requireContext())

@@ -10,6 +10,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -21,6 +22,9 @@ interface ImageApiService {
     suspend fun uploadProfilePicture(
         @Part image: MultipartBody.Part
     ): Response<PictureUploadResponse>
+
+    @DELETE("user/photo.php")
+    suspend fun deleteProfilePicture(): Response<PictureUploadResponse>
 
 
     companion object{

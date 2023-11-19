@@ -54,7 +54,7 @@
             android:text="Zaznamenávania okruhu "
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_image_btn" />
+            app:layout_constraintTop_toBottomOf="@id/delete_image_btn" />
 
         <EditText
             android:id="@+id/editTextTime"
@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="Čas zaznamenávania:"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/location_switch" />
@@ -131,6 +131,15 @@
             android:text="Zmeniť fotku"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/load_profile_btn" />
+
+        <Button
+            android:id="@+id/delete_image_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Zmazať fotku"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/add_image_btn" />
 
         <Button
             android:id="@+id/logout_btn"
