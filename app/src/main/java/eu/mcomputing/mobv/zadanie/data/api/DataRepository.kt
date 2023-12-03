@@ -140,7 +140,7 @@ class DataRepository private constructor(
                                 0.0,
                                 0.0,
                                 0.0,
-                                ""
+                                user.photo,
                             )
                         )
                     )

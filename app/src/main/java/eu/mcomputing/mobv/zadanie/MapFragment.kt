@@ -25,6 +25,7 @@ import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.gestures.gestures
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
+import eu.mcomputing.mobv.zadanie.data.PreferenceData
 import eu.mcomputing.mobv.zadanie.databinding.FragmentMapBinding
 
 
@@ -69,8 +70,9 @@ class MapFragment : Fragment() {
 
             // permission check
             val hasPermission = hasPermissions(requireContext())
+            val sharing = PreferenceData.getInstance().getSharing(requireContext())
             // map initialization
-            onMapReady(hasPermission)
+            onMapReady(hasPermission && sharing)
 
             bnd.myLocation.setOnClickListener {
                 if (!hasPermissions(requireContext())) {

@@ -8,6 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.NetworkPolicy
+import com.squareup.picasso.Picasso
 import eu.mcomputing.mobv.zadanie.data.db.entities.UserEntity
 import eu.mcomputing.mobv.zadanie.utils.ItemDiffCallback
 
@@ -53,6 +56,14 @@ class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
     // Táto metóda prepojí dáta s ViewHolderom
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.itemView.findViewById<TextView>(R.id.item_text).text = items[position].name
+        if(items[position].photo != ""){
+            Log.d("maAdapter", items[position].photo)
+        }
+
+        Picasso.get()
+            .load("https://upload.mcomputing.eu/" + items[position].photo )
+            .placeholder(R.drawable.ic_action_account)
+            .into(holder.itemView.findViewById<ImageView>(R.id.item_image))
     }
 
     // Vracia počet položiek v zozname
