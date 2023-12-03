@@ -50,7 +50,7 @@ class FeedFragment : Fragment() {
             bnd.feedRecyclerview.layoutManager = LinearLayoutManager(context)
 
             // Setting the Adapter with the recyclerview
-            val feedAdapter = MyAdapter()
+            val feedAdapter = MyAdapter(viewModel)
             bnd.feedRecyclerview.adapter = feedAdapter
 
             // Pozorovanie zmeny hodnoty

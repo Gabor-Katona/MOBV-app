@@ -53,7 +53,12 @@
         android:id="@+id/feedFragment"
         android:name="eu.mcomputing.mobv.zadanie.FeedFragment"
         android:label="FeedFragment"
-        tools:layout="@layout/fragment_feed"/>
+        tools:layout="@layout/fragment_feed">
+
+        <action
+            android:id="@+id/action_to_other_profile"
+            app:destination="@id/otherProfileFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/mapFragment"

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.MemoryPolicy
@@ -13,6 +14,7 @@ import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import eu.mcomputing.mobv.zadanie.data.db.entities.UserEntity
 import eu.mcomputing.mobv.zadanie.utils.ItemDiffCallback
+import eu.mcomputing.mobv.zadanie.viewmodels.FeedViewModel
 
 data class MyItem(val id: Int, val imageResource: Int, val text: String){
     override fun equals(other: Any?): Boolean {
@@ -36,7 +38,7 @@ data class MyItem(val id: Int, val imageResource: Int, val text: String){
     }
 }
 
-class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(private val viewModel: FeedViewModel) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
     private var items: List<UserEntity> = listOf()
 
     // ViewHolder poskytuje odkazy na zobrazenia v každej položke
@@ -64,6 +66,13 @@ class MyAdapter() : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
             .load("https://upload.mcomputing.eu/" + items[position].photo )
             .placeholder(R.drawable.ic_action_account)
             .into(holder.itemView.findViewById<ImageView>(R.id.item_image))
+
+        holder.itemView.setOnClickListener {
+            Log.d("Click", "clicked $position , " + items[position].uid)
+            viewModel.selectedUser.postValue(items[position])
+            it.findNavController().navigate(R.id.action_to_other_profile)
+        }
+
     }
 
     // Vracia počet položiek v zozname

@@ -26,6 +26,8 @@ class FeedViewModel(private val repository: DataRepository) : ViewModel() {
 
     val loading = MutableLiveData(false)
 
+    val selectedUser = MutableLiveData<UserEntity>(null)
+
     private val _message = MutableLiveData<Evento<String>>()
     val message: LiveData<Evento<String>>
         get() = _message

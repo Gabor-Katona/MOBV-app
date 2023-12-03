@@ -14,7 +14,7 @@ class ExampleFragment : Fragment(R.layout.fragment_example) {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = MyAdapter()
+        //recyclerView.adapter = MyAdapter()
 
 
 
