@@ -21,6 +21,14 @@ class ProfileViewModel(private val dataRepository: DataRepository) : ViewModel()
 
     //val sharingLocation = MutableLiveData<Boolean?>(null)
 
+    val startHour = MutableLiveData<Int>()
+    val startMinute = MutableLiveData<Int>()
+    val startTime = MutableLiveData<String>("od:")
+
+    val endHour = MutableLiveData<Int>()
+    val endMinute = MutableLiveData<Int>()
+    val endTime = MutableLiveData<String>("do:")
+
     fun loadUser(uid: String) {
         viewModelScope.launch {
             val result = dataRepository.apiGetUser(uid)

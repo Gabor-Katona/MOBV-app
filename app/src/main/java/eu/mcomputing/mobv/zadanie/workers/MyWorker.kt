@@ -9,10 +9,14 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import eu.mcomputing.mobv.zadanie.R
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
+import eu.mcomputing.mobv.zadanie.viewmodels.ProfileViewModel
 
 class MyWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -23,6 +27,7 @@ class MyWorker(appContext: Context, workerParams: WorkerParameters) :
         DataRepository.getInstance(applicationContext).apiGeofenceUsers()
 
         createNotification(applicationContext)
+        inputData.getString("file_path")?.let { Log.d("woker", it) }
 
         return Result.success()
     }

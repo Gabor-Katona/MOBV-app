@@ -3,6 +3,7 @@ package eu.mcomputing.mobv.zadanie
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -27,6 +28,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.work.Constraints
+import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -54,6 +56,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 class ProfileFragment : Fragment() {
@@ -143,6 +146,57 @@ class ProfileFragment : Fragment() {
             bnd.changePasswdButton.setOnClickListener {
                 // change password not implemented
                 it.findNavController().navigate(R.id.action_to_changePassword)
+            }
+
+            bnd.timeStartButton.setOnClickListener {
+                val timePickerDialog = TimePickerDialog(
+                    requireContext(),
+                    { _, hour, minute ->
+                        viewModel.startHour.postValue(hour)
+                        viewModel.startMinute.postValue(minute)
+                        val selectedTime = "od %d:%d".format(hour, minute)
+                        viewModel.startTime.postValue(selectedTime)
+                    },
+                    0, // Initial hour
+                    0, // Initial minute
+                    true // 24 hour mode
+                )
+
+                //cancel button
+                timePickerDialog.setOnCancelListener {
+                    viewModel.startHour.postValue(null)
+                    viewModel.startMinute.postValue(null)
+                    viewModel.startTime.postValue("od:")
+                }
+
+                timePickerDialog.show()
+                /*val currentTime = LocalDateTime.now()
+                Log.d("time", currentTime.hour.toString())*/
+            }
+
+            bnd.timeEndButton.setOnClickListener {
+                val timePickerDialog = TimePickerDialog(
+                    requireContext(),
+                    { _, hour, minute ->
+                        viewModel.endHour.postValue(hour)
+                        viewModel.endMinute.postValue(minute)
+                        val selectedTime = "od %d:%d".format(hour, minute)
+                        viewModel.endTime.postValue(selectedTime)
+                    },
+                    0, // Initial hour
+                    0, // Initial minute
+                    true // 24 hour mode
+                )
+
+                //cancel button
+                timePickerDialog.setOnCancelListener {
+                    Log.d("button", "cancel")
+                    viewModel.endHour.postValue(null)
+                    viewModel.endMinute.postValue(null)
+                    viewModel.endTime.postValue("do:")
+                }
+
+                timePickerDialog.show()
             }
 
             bnd.loadProfileBtn.setOnClickListener {
@@ -371,7 +425,7 @@ class ProfileFragment : Fragment() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val repeatingRequest = PeriodicWorkRequestBuilder<MyWorker>(
+        /*val repeatingRequest = PeriodicWorkRequestBuilder<MyWorker>(
             15, TimeUnit.MINUTES, // repeatInterval
             5, TimeUnit.MINUTES // flexInterval
         )
@@ -383,11 +437,14 @@ class ProfileFragment : Fragment() {
             "myworker",
             ExistingPeriodicWorkPolicy.KEEP, // or REPLACE
             repeatingRequest
-        )
+        )*/
 
-        /*val myWorkRequest = OneTimeWorkRequestBuilder<MyWorker>().build()
+        val data = Data.Builder()
+        data.putString("file_path", "put_file_path_here")
 
-        WorkManager.getInstance(requireContext()).enqueue(myWorkRequest)*/
+        val myWorkRequest = OneTimeWorkRequestBuilder<MyWorker>().setInputData(data.build()).build()
+
+        WorkManager.getInstance(requireContext()).enqueue(myWorkRequest)
     }
 
     private fun cancelWorker() {
