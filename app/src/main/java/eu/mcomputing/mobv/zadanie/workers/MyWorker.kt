@@ -14,9 +14,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import eu.mcomputing.mobv.zadanie.ProfileFragment
 import eu.mcomputing.mobv.zadanie.R
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
 import eu.mcomputing.mobv.zadanie.viewmodels.ProfileViewModel
+import java.time.LocalTime
 
 class MyWorker(appContext: Context, workerParams: WorkerParameters) :
     CoroutineWorker(appContext, workerParams) {
@@ -24,10 +26,33 @@ class MyWorker(appContext: Context, workerParams: WorkerParameters) :
     override suspend fun doWork(): Result {
         // Tu môžete vykonávať asynchrónnu prácu
         Log.d("MyWorker", "spustenie workera")
+
+        val startHour = inputData.getInt("startHour", -1)
+        val startMinute = inputData.getInt("startMinute", -1)
+        val endHour = inputData.getInt("endHour", -1)
+        val endMinute = inputData.getInt("endMinute", -1)
+
+        // start and end times are set
+        if (startHour != -1 && endHour != -1) {
+            val currentTime = LocalTime.now()
+
+            // Create LocalTime instances for start and end times
+            val startTime = LocalTime.of(startHour, startMinute)
+            val endTime = LocalTime.of(endHour, endMinute)
+
+            // Check if the current time is between start and end times
+            val isBetween = currentTime.isAfter(startTime) && currentTime.isBefore(endTime)
+
+            if (!isBetween) {
+                // not in time interval
+                Log.d("woker", "time outside")
+                return Result.success()
+            }
+        }
+
         DataRepository.getInstance(applicationContext).apiGeofenceUsers()
 
         createNotification(applicationContext)
-        inputData.getString("file_path")?.let { Log.d("woker", it) }
 
         return Result.success()
     }

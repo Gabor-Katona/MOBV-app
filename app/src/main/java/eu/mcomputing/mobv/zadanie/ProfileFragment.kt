@@ -11,17 +11,13 @@ import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.FileUtils
 import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.Companion.isPhotoPickerAvailable
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -54,9 +50,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 
 class ProfileFragment : Fragment() {
@@ -154,8 +148,10 @@ class ProfileFragment : Fragment() {
                     { _, hour, minute ->
                         viewModel.startHour.postValue(hour)
                         viewModel.startMinute.postValue(minute)
-                        val selectedTime = "od %d:%d".format(hour, minute)
+                        val selectedTime = "od %d:%02d".format(hour, minute)
                         viewModel.startTime.postValue(selectedTime)
+                        PreferenceData.getInstance().putStartSharingTime(requireContext(), LocalTime.of(hour, minute))
+                        workerSetAfterTimePicker()
                     },
                     0, // Initial hour
                     0, // Initial minute
@@ -167,11 +163,11 @@ class ProfileFragment : Fragment() {
                     viewModel.startHour.postValue(null)
                     viewModel.startMinute.postValue(null)
                     viewModel.startTime.postValue("od:")
+                    workerSetAfterTimePicker()
+                    //Log.d("profFrag", PreferenceData.getInstance().getStartSharingTime(requireContext()).toString());
                 }
 
                 timePickerDialog.show()
-                /*val currentTime = LocalDateTime.now()
-                Log.d("time", currentTime.hour.toString())*/
             }
 
             bnd.timeEndButton.setOnClickListener {
@@ -190,8 +186,10 @@ class ProfileFragment : Fragment() {
                     { _, hour, minute ->
                         viewModel.endHour.postValue(hour)
                         viewModel.endMinute.postValue(minute)
-                        val selectedTime = "od %d:%d".format(hour, minute)
+                        val selectedTime = "od %d:%02d".format(hour, minute)
                         viewModel.endTime.postValue(selectedTime)
+                        workerSetAfterTimePicker()
+                        PreferenceData.getInstance().putEndSharingTime(requireContext(), LocalTime.of(hour, minute))
                     },
                     startHour, // Initial hour
                     startMinute, // Initial minute
@@ -204,6 +202,7 @@ class ProfileFragment : Fragment() {
                     viewModel.endHour.postValue(null)
                     viewModel.endMinute.postValue(null)
                     viewModel.endTime.postValue("do:")
+                    workerSetAfterTimePicker()
                 }
 
                 timePickerDialog.show()
@@ -404,7 +403,30 @@ class ProfileFragment : Fragment() {
             addOnSuccessListener {
                 // Geofences boli úspešne pridané
                 Log.d("ProfileFragment", "geofence vytvoreny")
-                viewModel.updateGeofence(location.latitude, location.longitude, 100.0)
+
+                val startHour = viewModel.startHour.value ?: -1
+                val startMinute = viewModel.startMinute.value ?: -1
+                val endHour = viewModel.endHour.value ?: -1
+                val endMinute = viewModel.endMinute.value ?: -1
+
+                var isBetween = true
+
+                // start and end time are set
+                if(startHour != -1 &&  endHour != -1) {
+                    val currentTime = LocalTime.now()
+
+                    // Create LocalTime instances for start and end times
+                    val startTime = LocalTime.of(startHour, startMinute)
+                    val endTime = LocalTime.of(endHour, endMinute)
+
+                    // Check if the current time is between start and end times
+                    isBetween = currentTime.isAfter(startTime) && currentTime.isBefore(endTime)
+                }
+
+                if (isBetween) {
+                    // is in time interval or interval is not set
+                    viewModel.updateGeofence(location.latitude, location.longitude, 100.0)
+                }
 
                 runWorker()
             }
@@ -435,11 +457,18 @@ class ProfileFragment : Fragment() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        /*val repeatingRequest = PeriodicWorkRequestBuilder<MyWorker>(
+        val data = Data.Builder()
+        viewModel.startHour.value?.let { data.putInt("startHour", it) }
+        viewModel.startMinute.value?.let { data.putInt("startMinute", it) }
+        viewModel.endHour.value?.let { data.putInt("endHour", it) }
+        viewModel.endMinute.value?.let { data.putInt("endMinute", it) }
+
+        val repeatingRequest = PeriodicWorkRequestBuilder<MyWorker>(
             15, TimeUnit.MINUTES, // repeatInterval
             5, TimeUnit.MINUTES // flexInterval
         )
             .setConstraints(constraints)
+            .setInputData(data.build())
             .addTag("myworker-tag")
             .build()
 
@@ -447,17 +476,23 @@ class ProfileFragment : Fragment() {
             "myworker",
             ExistingPeriodicWorkPolicy.KEEP, // or REPLACE
             repeatingRequest
-        )*/
+        )
 
-        val data = Data.Builder()
-        data.putString("file_path", "put_file_path_here")
+        /*val myWorkRequest = OneTimeWorkRequestBuilder<MyWorker>().setInputData(data.build()).build()
 
-        val myWorkRequest = OneTimeWorkRequestBuilder<MyWorker>().setInputData(data.build()).build()
-
-        WorkManager.getInstance(requireContext()).enqueue(myWorkRequest)
+        WorkManager.getInstance(requireContext()).enqueue(myWorkRequest)*/
     }
 
     private fun cancelWorker() {
         WorkManager.getInstance(requireContext()).cancelUniqueWork("myworker")
+    }
+
+    private fun workerSetAfterTimePicker(){
+        cancelWorker()
+        if (binding.locationSwitch.isChecked) {
+            turnOnSharing()
+        } else {
+            turnOffSharing()
+        }
     }
 }

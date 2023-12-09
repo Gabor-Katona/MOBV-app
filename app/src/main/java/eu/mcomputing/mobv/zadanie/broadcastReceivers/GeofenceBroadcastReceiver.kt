@@ -9,16 +9,19 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
+import eu.mcomputing.mobv.zadanie.data.PreferenceData
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
 import eu.mcomputing.mobv.zadanie.data.db.entities.GeofenceEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
@@ -99,20 +102,34 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         // adding Geofences to LocationServices.getGeofencingClient
         geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
             addOnSuccessListener {
+                val startTime = PreferenceData.getInstance().getStartSharingTime(context)
+                val endTime = PreferenceData.getInstance().getEndSharingTime(context)
 
-                CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        // you code here
-                        Log.d("GeofenceBroadcastReceiver", "novy geofence vytvoreny")
-                        DataRepository.getInstance(context).insertGeofence(
-                            GeofenceEntity(
-                                location.latitude,
-                                location.longitude,
-                                100.0
+                var isBetween = true
+
+                // start and end times are set
+                if (startTime != null && endTime != null) {
+
+                    // calculate interval
+                    val currentTime = LocalTime.now()
+                    isBetween = currentTime.isAfter(startTime) && currentTime.isBefore(endTime)
+                }
+
+                // is in time interval or interval is not set
+                if (isBetween) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            Log.d("GeofenceBroadcastReceiver", "novy geofence vytvoreny")
+                            DataRepository.getInstance(context).insertGeofence(
+                                GeofenceEntity(
+                                    location.latitude,
+                                    location.longitude,
+                                    100.0
+                                )
                             )
-                        )
-                    } catch (e: Exception) {
-                        Log.e("GeofenceBroadcastReceiver", "error 7")
+                        } catch (e: Exception) {
+                            Log.e("GeofenceBroadcastReceiver", "error 7")
+                        }
                     }
                 }
             }

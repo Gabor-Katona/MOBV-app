@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import eu.mcomputing.mobv.zadanie.config.AppConfig
 import eu.mcomputing.mobv.zadanie.data.model.User
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class PreferenceData private constructor() {
 
@@ -28,6 +30,8 @@ class PreferenceData private constructor() {
         private const val shpKey = AppConfig.SharedPreferences_KEY
         private const val userKey = "userKey"
         private const val sharingKey = "sharingKey"
+        private const val startSharingTimeKey = "startSharingTimeKey"
+        private const val endSharingTimeKey = "endSharingTimeKey"
 
     }
 
@@ -67,6 +71,44 @@ class PreferenceData private constructor() {
         val sharing = sharedPref.getBoolean(sharingKey, false)
 
         return sharing
+    }
+
+    fun putStartSharingTime(context: Context?, time: LocalTime) {
+        val sharedPref = getSharedPreferences(context) ?: return
+        val editor = sharedPref.edit()
+        val timeAsString = time.format(DateTimeFormatter.ISO_LOCAL_TIME)
+        editor.putString(startSharingTimeKey, timeAsString)
+        editor.apply()
+    }
+
+    fun getStartSharingTime(context: Context?): LocalTime? {
+        val sharedPref = getSharedPreferences(context) ?: return null
+        val timeAsString = sharedPref.getString(startSharingTimeKey, null)
+
+        return if (timeAsString != null) {
+            LocalTime.parse(timeAsString, DateTimeFormatter.ISO_LOCAL_TIME)
+        } else {
+            null
+        }
+    }
+
+    fun putEndSharingTime(context: Context?, time: LocalTime) {
+        val sharedPref = getSharedPreferences(context) ?: return
+        val editor = sharedPref.edit()
+        val timeAsString = time.format(DateTimeFormatter.ISO_LOCAL_TIME)
+        editor.putString(endSharingTimeKey, timeAsString)
+        editor.apply()
+    }
+
+    fun getEndSharingTime(context: Context?): LocalTime? {
+        val sharedPref = getSharedPreferences(context) ?: return null
+        val timeAsString = sharedPref.getString(endSharingTimeKey, null)
+
+        return if (timeAsString != null) {
+            LocalTime.parse(timeAsString, DateTimeFormatter.ISO_LOCAL_TIME)
+        } else {
+            null
+        }
     }
 
 }
