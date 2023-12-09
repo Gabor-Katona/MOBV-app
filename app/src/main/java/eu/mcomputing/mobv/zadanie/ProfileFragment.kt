@@ -175,6 +175,16 @@ class ProfileFragment : Fragment() {
             }
 
             bnd.timeEndButton.setOnClickListener {
+                var startHour = 0
+                var startMinute = 0
+                viewModel.startHour.value?.let {
+                    startHour = it
+                }
+
+                viewModel.startMinute.value?.let {
+                    startMinute = it
+                }
+
                 val timePickerDialog = TimePickerDialog(
                     requireContext(),
                     { _, hour, minute ->
@@ -183,8 +193,8 @@ class ProfileFragment : Fragment() {
                         val selectedTime = "od %d:%d".format(hour, minute)
                         viewModel.endTime.postValue(selectedTime)
                     },
-                    0, // Initial hour
-                    0, // Initial minute
+                    startHour, // Initial hour
+                    startMinute, // Initial minute
                     true // 24 hour mode
                 )
 
