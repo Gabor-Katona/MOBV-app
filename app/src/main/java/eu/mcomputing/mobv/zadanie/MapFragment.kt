@@ -3,14 +3,22 @@ package eu.mcomputing.mobv.zadanie
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
 import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -19,7 +27,11 @@ import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotation
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
+import com.mapbox.maps.plugin.annotation.generated.OnPointAnnotationClickListener
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createCircleAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
 import com.mapbox.maps.plugin.gestures.OnMoveListener
 import com.mapbox.maps.plugin.gestures.addOnMapClickListener
 import com.mapbox.maps.plugin.gestures.gestures
@@ -27,6 +39,11 @@ import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListen
 import com.mapbox.maps.plugin.locationcomponent.location
 import eu.mcomputing.mobv.zadanie.data.PreferenceData
 import eu.mcomputing.mobv.zadanie.databinding.FragmentMapBinding
+import org.json.JSONObject
+import java.lang.Math.PI
+import java.lang.Math.cos
+import java.lang.Math.sin
+import java.lang.Math.sqrt
 
 
 class MapFragment : Fragment() {
@@ -34,6 +51,7 @@ class MapFragment : Fragment() {
     private var selectedPoint: CircleAnnotation? = null
     private var lastLocation: Point? = null
     private lateinit var annotationManager: CircleAnnotationManager
+    private lateinit var pointAnnotationManager: PointAnnotationManager
 
     private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
@@ -67,6 +85,7 @@ class MapFragment : Fragment() {
         }.also { bnd ->
 
             annotationManager = bnd.mapView.annotations.createCircleAnnotationManager()
+            pointAnnotationManager = bnd.mapView.annotations.createPointAnnotationManager()
 
             // permission check
             val hasPermission = hasPermissions(requireContext())
@@ -88,6 +107,28 @@ class MapFragment : Fragment() {
                     Log.d("MapFragment","location click")
                 }
             }
+
+            /*Glide.with(requireContext())
+                .asBitmap()
+                .load(R.drawable.ic_action_account)
+                .circleCrop()
+                .override(65, 65)
+                .into(object : CustomTarget<Bitmap>(){
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        val options = PointAnnotationOptions()
+                            .withPoint(Point.fromLngLat(37.783333, -122.416667))
+                            .withIconImage(resource)
+
+                        pointAnnotationManager.create(options)
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        TODO("Not yet implemented")
+                    }
+                })*/
         }
     }
 
@@ -159,7 +200,7 @@ class MapFragment : Fragment() {
     private fun refreshLocation(point: Point) {
         // center camera
         binding.mapView.getMapboxMap()
-            .setCamera(CameraOptions.Builder().center(point).zoom(14.0).build())
+            .setCamera(CameraOptions.Builder().center(point).zoom(15.0).build())
         // sets focal point to the new position
         binding.mapView.gestures.focalPoint =
             binding.mapView.getMapboxMap().pixelForCoordinate(point)
@@ -183,6 +224,45 @@ class MapFragment : Fragment() {
                 .withCircleStrokeWidth(2.0)
                 .withCircleStrokeColor("#ffffff")
             selectedPoint = annotationManager.create(pointAnnotationOptions)
+
+            val randomPoint = generateRandomCoordinates(point.latitude(), point.longitude(),0.1)
+
+            Glide.with(requireContext())
+                .asBitmap()
+                .load(R.drawable.ic_action_account)
+                .circleCrop()
+                .override(65, 65)
+                .into(object : CustomTarget<Bitmap>(){
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+
+                        val name = JsonPrimitive("John Doe")
+
+                        val options = PointAnnotationOptions()
+                            .withPoint(Point.fromLngLat(randomPoint.second, randomPoint.first))
+                            .withIconImage(resource)
+                            .withData(name)
+
+
+                        val ano = pointAnnotationManager.create(options)
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        TODO("Not yet implemented")
+                    }
+                })
+
+            pointAnnotationManager.apply {
+                addClickListener(
+                    OnPointAnnotationClickListener {
+                        Toast.makeText(requireContext(), "id: ${it.getData()}", Toast.LENGTH_LONG).show()
+                        false
+                    }
+                )
+            }
+
         } else {
             selectedPoint?.let {
                 it.point = point
@@ -224,6 +304,22 @@ class MapFragment : Fragment() {
             location.removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
             gestures.removeOnMoveListener(onMoveListener)
         }
+    }
+
+    fun generateRandomCoordinates(centerLat: Double, centerLng: Double, radius: Double): Pair<Double, Double> {
+        val random = java.util.Random()
+
+        // Generate a random angle within the circle
+        val angle = random.nextDouble() * 2.0 * PI
+
+        // Generate a random distance within the radius
+        val distance = sqrt(random.nextDouble()) * radius
+
+        // Calculate the new coordinates
+        val newLat = centerLat + distance * cos(angle) / 111.32 // 1 degree of latitude is approximately 111.32 kilometers
+        val newLng = centerLng + distance * sin(angle) / (111.32 * cos(centerLat * PI / 180)) // Correct for the longitude distance based on latitude
+
+        return Pair(newLat, newLng)
     }
 
 }

@@ -78,4 +78,6 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.8.1")
 
     implementation("com.squareup.picasso:picasso:2.8")
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }
