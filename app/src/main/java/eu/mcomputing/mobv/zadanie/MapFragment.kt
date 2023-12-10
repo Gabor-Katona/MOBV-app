@@ -4,25 +4,22 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation.findNavController
-import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.gson.JsonElement
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonPrimitive
 import com.mapbox.android.gestures.MoveGestureDetector
 import com.mapbox.geojson.Point
@@ -46,13 +43,10 @@ import com.mapbox.maps.plugin.locationcomponent.location
 import eu.mcomputing.mobv.zadanie.data.PreferenceData
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
 import eu.mcomputing.mobv.zadanie.databinding.FragmentMapBinding
-import eu.mcomputing.mobv.zadanie.viewmodels.AuthViewModel
 import eu.mcomputing.mobv.zadanie.viewmodels.FeedViewModel
-import eu.mcomputing.mobv.zadanie.viewmodels.ProfileViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import java.lang.Math.PI
 import java.lang.Math.cos
 import java.lang.Math.sin
@@ -109,100 +103,125 @@ class MapFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
         }.also { bnd ->
 
-            annotationManager = bnd.mapView.annotations.createCircleAnnotationManager()
-            pointAnnotationManager = bnd.mapView.annotations.createPointAnnotationManager()
+            val sharing = PreferenceData.getInstance().getSharing(requireContext())
 
-            // get logged user
-            val userMe = PreferenceData.getInstance().getUser(requireContext())
+            // check if sharing is on
+            if (sharing) {
 
-            var center = Point.fromLngLat(0.0, 0.0)
+                annotationManager = bnd.mapView.annotations.createCircleAnnotationManager()
+                pointAnnotationManager = bnd.mapView.annotations.createPointAnnotationManager()
 
-            val scope = CoroutineScope(Dispatchers.Main)
-            scope.launch {
-                // get all users
-                val users = DataRepository.getInstance(requireContext()).getUsersList() ?: emptyList()
+                // get logged user
+                val userMe = PreferenceData.getInstance().getUser(requireContext())
 
-                // find logged user to get possition
-                for(u in users){
-                    if(u.uid == userMe?.id){
-                        center = Point.fromLngLat(u.lon, u.lat)
-                        Log.d("mapfragment", u.toString())
+                var center = Point.fromLngLat(0.0, 0.0)
+
+                val scope = CoroutineScope(Dispatchers.Main)
+                scope.launch {
+                    // get all users
+                    val users =
+                        DataRepository.getInstance(requireContext()).getUsersList() ?: emptyList()
+
+                    // logged user radius
+                    var radius = 100.0
+
+                    // find logged user to get possition
+                    for (u in users) {
+                        if (u.uid == userMe?.id) {
+                            center = Point.fromLngLat(u.lon, u.lat)
+                            radius = u.radius
+                            Log.d("mapfragment", u.toString())
+                        }
                     }
-                }
 
-                // draw circle
-                bnd.mapView.getMapboxMap().loadStyle(
-                    style(Style.MAPBOX_STREETS) {
-                        val pointAnnotationOptions = CircleAnnotationOptions()
-                            .withPoint(center)
-                            .withCircleRadius(100.0)
-                            .withCircleOpacity(0.2)
-                            .withCircleColor("#000")
-                            .withCircleStrokeWidth(2.0)
-                            .withCircleStrokeColor("#ffffff")
-                        annotationManager.create(pointAnnotationOptions)
-                    }
-                )
+                    // draw circle
+                    bnd.mapView.getMapboxMap().loadStyle(
+                        style(Style.MAPBOX_STREETS) {
+                            val pointAnnotationOptions = CircleAnnotationOptions()
+                                .withPoint(center)
+                                .withCircleRadius(radius)
+                                .withCircleOpacity(0.2)
+                                .withCircleColor("#000")
+                                .withCircleStrokeWidth(2.0)
+                                .withCircleStrokeColor("#ffffff")
+                            annotationManager.create(pointAnnotationOptions)
+                        }
+                    )
 
-                // center the camera
-                bnd.mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(center).zoom(15.0).build())
+                    // center the camera
+                    bnd.mapView.getMapboxMap()
+                        .setCamera(CameraOptions.Builder().center(center).zoom(15.0).build())
 
-                // draw user photos to the circle
-                for(u in users){
-                    if(u.uid != userMe?.id) {
-                        val photo = if (u.photo == "") R.drawable.ic_action_account else "https://upload.mcomputing.eu/" + u.photo
+                    // draw user photos to the circle
+                    for (u in users) {
+                        if (u.uid != userMe?.id) {
+                            val photo =
+                                if (u.photo == "") R.drawable.ic_action_account else "https://upload.mcomputing.eu/" + u.photo
 
-                        // generate random point in the circle
-                        val randomPoint =
-                            generateRandomCoordinates(center.latitude(), center.longitude(), 0.1)
-                        val userData = JsonPrimitive(u.uid)
+                            // generate random point in the circle
+                            val randomPoint = generateRandomCoordinates(
+                                center.latitude(),
+                                center.longitude(),
+                                radius / 1000.0
+                            )
+                            val userData = JsonPrimitive(u.uid)
 
-                        Glide.with(requireContext())
-                            .asBitmap()
-                            .load(photo)
-                            .circleCrop()
-                            .override(65, 65)
-                            .into(object : CustomTarget<Bitmap>() {
-                                override fun onResourceReady(
-                                    resource: Bitmap,
-                                    transition: Transition<in Bitmap>?
-                                ) {
-                                    val options = PointAnnotationOptions()
-                                        .withPoint(
-                                            Point.fromLngLat(
-                                                randomPoint.second,
-                                                randomPoint.first
+                            Glide.with(requireContext())
+                                .asBitmap()
+                                .load(photo)
+                                .circleCrop()
+                                .override(65, 65)
+                                .into(object : CustomTarget<Bitmap>() {
+                                    override fun onResourceReady(
+                                        resource: Bitmap,
+                                        transition: Transition<in Bitmap>?
+                                    ) {
+                                        val options = PointAnnotationOptions()
+                                            .withPoint(
+                                                Point.fromLngLat(
+                                                    randomPoint.second,
+                                                    randomPoint.first
+                                                )
                                             )
-                                        )
-                                        .withIconImage(resource)
-                                        .withData(userData)
+                                            .withIconImage(resource)
+                                            .withData(userData)
 
 
-                                    pointAnnotationManager.create(options)
-                                }
-
-                                override fun onLoadCleared(placeholder: Drawable?) {
-                                    // implementation
-                                }
-                            })
-
-                        pointAnnotationManager.apply {
-                            addClickListener(
-                                OnPointAnnotationClickListener {
-                                    for(user in users){
-                                        if(user.uid == it.getData().toString().replace("\"", "")){
-                                            Log.d("mapfragment", user.name)
-                                            feedViewModel.selectedUser.postValue(user)
-                                            findNavController(view).navigate(R.id.action_to_other_profile)
-                                        }
+                                        pointAnnotationManager.create(options)
                                     }
 
-                                    false
-                                }
-                            )
+                                    override fun onLoadCleared(placeholder: Drawable?) {
+                                        // implementation
+                                    }
+                                })
+
+                            pointAnnotationManager.apply {
+                                addClickListener(
+                                    OnPointAnnotationClickListener {
+                                        for (user in users) {
+                                            if (user.uid == it.getData().toString()
+                                                    .replace("\"", "")
+                                            ) {
+                                                Log.d("mapfragment", user.name)
+                                                feedViewModel.selectedUser.postValue(user)
+                                                findNavController(view).navigate(R.id.action_to_other_profile)
+                                            }
+                                        }
+
+                                        false
+                                    }
+                                )
+                            }
                         }
                     }
                 }
+            } else {
+                val snackbar = Snackbar
+                    .make(view, "Turn on sharing to show users", Snackbar.LENGTH_LONG)
+                    .setAction("Turn on") {
+                        findNavController(view).navigate(R.id.action_to_profile)
+                    }
+                    .show()
             }
 
             /*// permission check
