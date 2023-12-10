@@ -64,7 +64,12 @@
         android:id="@+id/mapFragment"
         android:name="eu.mcomputing.mobv.zadanie.MapFragment"
         android:label="MapFragment"
-        tools:layout="@layout/fragment_map"/>
+        tools:layout="@layout/fragment_map">
+
+        <action
+            android:id="@+id/action_to_other_profile"
+            app:destination="@id/otherProfileFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/profileFragment"
