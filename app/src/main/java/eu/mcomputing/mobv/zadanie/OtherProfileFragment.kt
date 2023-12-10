@@ -72,58 +72,33 @@ class OtherProfileFragment : Fragment(R.layout.fragment_other_profile) {
 
             var mapView: MapView? = bnd.mapView
             //mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS)
-            var annotationManager = bnd.mapView.annotations.createCircleAnnotationManager()
+            val annotationManager = bnd.mapView.annotations.createCircleAnnotationManager()
 
-            /*mapView?.getMapboxMap()?.setCamera(
-                CameraOptions.Builder()
-                    .center(Point.fromLngLat(-98.0, 39.5))
-                    .pitch(0.0)
-                    .zoom(2.0)
-                    .bearing(0.0)
-                    .build()
-            )*/
+            Picasso.get()
+                .load("https://upload.mcomputing.eu/" + viewModel.selectedUser.value?.photo )
+                .placeholder(R.drawable.ic_action_account)
+                .into(bnd.imageView)
 
+            var center = Point.fromLngLat(0.0, 0.0)
+            center = viewModel.selectedUser.value?.let { Point.fromLngLat(it.lon, it.lat) }
 
-            val center = Point.fromLngLat(37.783333, -122.416667)
-            val radius = 1000.0 // In meters
+            val radius = if (viewModel.selectedUser.value != null) viewModel.selectedUser.value!!.radius else 100.0
 
-
-
-            //val point = Point("type", null, listOf(-98.0, 39.5))
-
-            /*mapView?.getMapboxMap()?.loadStyle(
+            bnd.mapView.getMapboxMap().loadStyle(
                 style(Style.MAPBOX_STREETS) {
                     val pointAnnotationOptions = CircleAnnotationOptions()
                         .withPoint(center)
-                        .withCircleRadius(100.0)
+                        .withCircleRadius(radius)
                         .withCircleOpacity(0.2)
                         .withCircleColor("#000")
                         .withCircleStrokeWidth(2.0)
                         .withCircleStrokeColor("#ffffff")
                     annotationManager.create(pointAnnotationOptions)
                 }
-            )*/
-            val annotationPlugin = binding.mapView.annotations
-            val circleAnnotationManager = annotationPlugin.createCircleAnnotationManager().apply {
-                mapView?.getMapboxMap()?.loadStyle(
-                    style(Style.MAPBOX_STREETS) {
-                        val circleAnnotationOptions: CircleAnnotationOptions =
-                            CircleAnnotationOptions()
-                                .withPoint(Point.fromLngLat(37.783333, -122.416667))
-                                .withCircleColor(Color.YELLOW)
-                                .withCircleRadius(12.0)
-                                .withDraggable(false)
-                        create(circleAnnotationOptions)
-                    }
-                )
-            }
+            )
 
-
-
-            Picasso.get()
-                .load("https://upload.mcomputing.eu/" + viewModel.selectedUser.value?.photo )
-                .placeholder(R.drawable.ic_action_account)
-                .into(bnd.imageView)
+            // center the camera
+            bnd.mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(center).zoom(15.0).build())
         }
     }
 

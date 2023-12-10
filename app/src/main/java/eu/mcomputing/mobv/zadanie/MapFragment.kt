@@ -205,24 +205,6 @@ class MapFragment : Fragment() {
                 }
             }
 
-
-
-            /*bnd.mapView.getMapboxMap().loadStyle(
-                style(Style.MAPBOX_STREETS) {
-                    val pointAnnotationOptions = CircleAnnotationOptions()
-                        .withPoint(center)
-                        .withCircleRadius(100.0)
-                        .withCircleOpacity(0.2)
-                        .withCircleColor("#000")
-                        .withCircleStrokeWidth(2.0)
-                        .withCircleStrokeColor("#ffffff")
-                    annotationManager.create(pointAnnotationOptions)
-                }
-            )
-
-            bnd.mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(center).zoom(15.0).build())*/
-
-
             /*// permission check
             val hasPermission = hasPermissions(requireContext())
             val sharing = PreferenceData.getInstance().getSharing(requireContext())
@@ -243,28 +225,6 @@ class MapFragment : Fragment() {
                     Log.d("MapFragment","location click")
                 }
             }*/
-
-            /*Glide.with(requireContext())
-                .asBitmap()
-                .load(R.drawable.ic_action_account)
-                .circleCrop()
-                .override(65, 65)
-                .into(object : CustomTarget<Bitmap>(){
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        val options = PointAnnotationOptions()
-                            .withPoint(Point.fromLngLat(37.783333, -122.416667))
-                            .withIconImage(resource)
-
-                        pointAnnotationManager.create(options)
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        TODO("Not yet implemented")
-                    }
-                })*/
         }
     }
 
@@ -360,45 +320,6 @@ class MapFragment : Fragment() {
                 .withCircleStrokeWidth(2.0)
                 .withCircleStrokeColor("#ffffff")
             selectedPoint = annotationManager.create(pointAnnotationOptions)
-
-            val randomPoint = generateRandomCoordinates(point.latitude(), point.longitude(),0.1)
-
-            Glide.with(requireContext())
-                .asBitmap()
-                .load(R.drawable.ic_action_account)
-                .circleCrop()
-                .override(65, 65)
-                .into(object : CustomTarget<Bitmap>(){
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-
-                        val name = JsonPrimitive("John Doe")
-
-                        val options = PointAnnotationOptions()
-                            .withPoint(Point.fromLngLat(randomPoint.second, randomPoint.first))
-                            .withIconImage(resource)
-                            .withData(name)
-
-
-                        val ano = pointAnnotationManager.create(options)
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        TODO("Not yet implemented")
-                    }
-                })
-
-            pointAnnotationManager.apply {
-                addClickListener(
-                    OnPointAnnotationClickListener {
-                        Toast.makeText(requireContext(), "id: ${it.getData()}", Toast.LENGTH_LONG).show()
-                        false
-                    }
-                )
-            }
-
         } else {
             selectedPoint?.let {
                 it.point = point
