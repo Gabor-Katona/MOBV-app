@@ -137,9 +137,25 @@ class ProfileFragment : Fragment() {
                 bnd.textEmail.text = user.email
             }*/
 
+            // load user
+            val user = PreferenceData.getInstance().getUser(requireContext())
+            user?.let {
+                viewModel.loadUser(it.id)
+            }
+
             bnd.changePasswdButton.setOnClickListener {
                 // change password not implemented
                 it.findNavController().navigate(R.id.action_to_changePassword)
+            }
+
+            // set start, end time values from preference data
+            val startTime = PreferenceData.getInstance().getStartSharingTime(requireContext())
+            if (startTime != null) {
+                viewModel.startTime.postValue("od %d:%02d".format(startTime.hour, startTime.minute))
+            }
+            val endTime = PreferenceData.getInstance().getEndSharingTime(requireContext())
+            if (endTime != null) {
+                viewModel.endTime.postValue("od %d:%02d".format(endTime.hour, endTime.minute))
             }
 
             bnd.timeStartButton.setOnClickListener {
@@ -226,7 +242,6 @@ class ProfileFragment : Fragment() {
             }
 
             viewModel.userResult.observe(viewLifecycleOwner) {
-
                 Picasso.get()
                     .load("https://upload.mcomputing.eu/" + viewModel.userResult.value?.photo )
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -268,6 +283,14 @@ class ProfileFragment : Fragment() {
                                 response,
                                 Snackbar.LENGTH_SHORT
                             ).show()
+
+                            if (response == "Picture successfully uploaded") {
+                                // reload user
+                                val user = PreferenceData.getInstance().getUser(requireContext())
+                                user?.let {
+                                    viewModel.loadUser(it.id)
+                                }
+                            }
                         }
                     }
 
@@ -289,6 +312,12 @@ class ProfileFragment : Fragment() {
                     val response = DataRepository.getInstance(requireContext()).apiDeleteProfilePicture()
                     if(response.second == true){
                         bnd.imageView2.setImageResource(R.drawable.ic_action_account)
+
+                        // reload user
+                        val user = PreferenceData.getInstance().getUser(requireContext())
+                        user?.let {
+                            viewModel.loadUser(it.id)
+                        }
                     }
                     Snackbar.make(
                         bnd.addImageBtn,

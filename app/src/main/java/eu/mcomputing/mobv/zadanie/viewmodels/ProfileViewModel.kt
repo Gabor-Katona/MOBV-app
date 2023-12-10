@@ -38,6 +38,21 @@ class ProfileViewModel(private val dataRepository: DataRepository) : ViewModel()
         }
     }
 
+    fun updateUserPhoto(photo: String) {
+        if(_userResult.value != null ) {
+            var user = User(
+                _userResult.value!!.username,
+                _userResult.value!!.email,
+                _userResult.value!!.id,
+                _userResult.value!!.access,
+                _userResult.value!!.refresh,
+                photo
+            )
+            _userResult.postValue(user)
+        }
+    }
+
+
     fun updateGeofence(lat: Double, lon: Double, radius: Double) {
         viewModelScope.launch {
             dataRepository.insertGeofence(GeofenceEntity(lat, lon, radius))
