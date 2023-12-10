@@ -131,7 +131,7 @@ class DataRepository private constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     val user = User(it.name, "", it.id, "", "", it.photo)
-                    cache.insertUserItems(
+                    /*cache.insertUserItems(
                         listOf(
                             UserEntity(
                                 user.id,
@@ -143,7 +143,7 @@ class DataRepository private constructor(
                                 user.photo,
                             )
                         )
-                    )
+                    )*/
                     return Pair("", user)
                 }
             }

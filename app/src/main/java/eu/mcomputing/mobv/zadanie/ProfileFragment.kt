@@ -43,6 +43,7 @@ import eu.mcomputing.mobv.zadanie.broadcastReceivers.GeofenceBroadcastReceiver
 import eu.mcomputing.mobv.zadanie.data.PreferenceData
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
 import eu.mcomputing.mobv.zadanie.databinding.FragmentProfileBinding
+import eu.mcomputing.mobv.zadanie.utils.NetworkUtils
 import eu.mcomputing.mobv.zadanie.viewmodels.AuthViewModel
 import eu.mcomputing.mobv.zadanie.viewmodels.ProfileViewModel
 import eu.mcomputing.mobv.zadanie.workers.MyWorker
@@ -137,11 +138,14 @@ class ProfileFragment : Fragment() {
                 bnd.textEmail.text = user.email
             }*/
 
-            // load user
-            val user = PreferenceData.getInstance().getUser(requireContext())
-            user?.let {
-                viewModel.loadUser(it.id)
+            if (NetworkUtils.isNetworkAvailable(requireContext())) {
+                // load user
+                val user = PreferenceData.getInstance().getUser(requireContext())
+                user?.let {
+                    viewModel.loadUser(it.id)
+                }
             }
+
 
             bnd.changePasswdButton.setOnClickListener {
                 // change password not implemented
