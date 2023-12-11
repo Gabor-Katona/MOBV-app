@@ -162,7 +162,7 @@ class ProfileFragment : Fragment() {
             // map initialization
             onMapReady(hasPermission && sharing)
 
-            
+
             /*val user = PreferenceData.getInstance().getUser(requireContext())
             if (user != null) {
                 bnd.textEmail.text = user.email

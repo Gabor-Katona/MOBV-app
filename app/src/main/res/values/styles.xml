@@ -6,9 +6,9 @@
     </style>
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="colorPrimary">#3F51B5</item>
-        <item name="colorPrimaryDark">#303F9F</item>
-        <item name="colorAccent">#FF4081</item>
+        <item name="colorPrimary">#44A680</item>
+        <item name="colorPrimaryDark">#236969</item>
+        <item name="colorAccent">#489CC1</item>
     </style>
 
     <style name="BaseTextStyle">
