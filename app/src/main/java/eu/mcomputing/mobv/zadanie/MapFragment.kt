@@ -52,6 +52,7 @@ import java.lang.Math.cos
 import java.lang.Math.sin
 import java.lang.Math.sqrt
 import java.lang.Thread.sleep
+import java.time.LocalTime
 
 
 class MapFragment : Fragment() {
@@ -106,8 +107,20 @@ class MapFragment : Fragment() {
 
             val sharing = PreferenceData.getInstance().getSharing(requireContext())
 
+            val startTime = PreferenceData.getInstance().getStartSharingTime(context)
+            val endTime = PreferenceData.getInstance().getEndSharingTime(context)
+
+            var isBetween = true
+
+            // start and end times are set
+            if (startTime != null && endTime != null) {
+                // calculate interval
+                val currentTime = LocalTime.now()
+                isBetween = currentTime.isAfter(startTime) && currentTime.isBefore(endTime)
+            }
+
             // check if sharing is on
-            if (sharing) {
+            if (sharing && isBetween) {
 
                 annotationManager = bnd.mapView.annotations.createCircleAnnotationManager()
                 pointAnnotationManager = bnd.mapView.annotations.createPointAnnotationManager()
@@ -229,26 +242,6 @@ class MapFragment : Fragment() {
                     .show()
             }
 
-            /*// permission check
-            val hasPermission = hasPermissions(requireContext())
-            val sharing = PreferenceData.getInstance().getSharing(requireContext())
-            // map initialization
-            onMapReady(hasPermission && sharing)
-
-            bnd.myLocation.setOnClickListener {
-                if (!hasPermissions(requireContext())) {
-                    // no permission
-                    requestPermissionLauncher.launch(
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    )
-                } else {
-                    lastLocation?.let {
-                        refreshLocation(it)
-                    }
-                    addLocationListeners()
-                    Log.d("MapFragment","location click")
-                }
-            }*/
         }
     }
 
