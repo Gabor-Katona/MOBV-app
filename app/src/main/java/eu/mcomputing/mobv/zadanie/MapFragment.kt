@@ -51,6 +51,7 @@ import java.lang.Math.PI
 import java.lang.Math.cos
 import java.lang.Math.sin
 import java.lang.Math.sqrt
+import java.lang.Thread.sleep
 
 
 class MapFragment : Fragment() {
@@ -199,16 +200,16 @@ class MapFragment : Fragment() {
                                 addClickListener(
                                     OnPointAnnotationClickListener {
                                         for (user in users) {
-                                            if (user.uid == it.getData().toString()
-                                                    .replace("\"", "")
-                                            ) {
+                                            if (user.uid == it.getData().toString().replace("\"", "")) {
                                                 Log.d("mapfragment", user.name)
                                                 feedViewModel.selectedUser.postValue(user)
-                                                findNavController(view).navigate(R.id.action_to_other_profile)
+                                                //findNavController(view).navigate(R.id.action_to_other_profile)
+                                                break
                                             }
                                         }
+                                        findNavController(view).navigate(R.id.action_to_other_profile)
 
-                                        false
+                                        true
                                     }
                                 )
                             }
