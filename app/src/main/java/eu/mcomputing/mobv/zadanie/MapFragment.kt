@@ -196,6 +196,10 @@ class MapFragment : Fragment() {
                                     }
                                 })
 
+                            bnd.myLocation.setOnClickListener {
+                                bnd.mapView.getMapboxMap().setCamera(CameraOptions.Builder().center(center).zoom(15.0).build())
+                            }
+
                             pointAnnotationManager.apply {
                                 addClickListener(
                                     OnPointAnnotationClickListener {

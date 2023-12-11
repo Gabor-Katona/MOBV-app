@@ -34,8 +34,23 @@ import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.mapbox.android.gestures.MoveGestureDetector
+import com.mapbox.geojson.Point
+import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.CircleAnnotation
+import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
+import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.createCircleAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
+import com.mapbox.maps.plugin.gestures.OnMoveListener
+import com.mapbox.maps.plugin.gestures.addOnMapClickListener
+import com.mapbox.maps.plugin.gestures.gestures
+import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
+import com.mapbox.maps.plugin.locationcomponent.location
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
@@ -59,6 +74,11 @@ class ProfileFragment : Fragment() {
     private lateinit var viewModel: ProfileViewModel
     private lateinit var authViewModel: AuthViewModel
     private lateinit var binding: FragmentProfileBinding
+
+    private var selectedPoint: CircleAnnotation? = null
+    private var lastLocation: Point? = null
+    private lateinit var annotationManager: CircleAnnotationManager
+    private lateinit var pointAnnotationManager: PointAnnotationManager
 
     private val PERMISSIONS_REQUIRED = when {
         Build.VERSION.SDK_INT >= 33 -> {// android 13m
@@ -133,6 +153,16 @@ class ProfileFragment : Fragment() {
             var mapView: MapView? = bnd.mapView
             mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS)
 
+            annotationManager = bnd.mapView.annotations.createCircleAnnotationManager()
+            pointAnnotationManager = bnd.mapView.annotations.createPointAnnotationManager()
+
+            // permission check
+            val hasPermission = hasPermissions(requireContext())
+            val sharing = PreferenceData.getInstance().getSharing(requireContext())
+            // map initialization
+            onMapReady(hasPermission && sharing)
+
+            
             /*val user = PreferenceData.getInstance().getUser(requireContext())
             if (user != null) {
                 bnd.textEmail.text = user.email
@@ -526,6 +556,143 @@ class ProfileFragment : Fragment() {
             turnOnSharing()
         } else {
             turnOffSharing()
+        }
+    }
+
+    //---------------------------------------------------------------------------------
+
+    /**
+     * Map initialization - sets the camera, loads the style, and adds listeners
+     * for map clicks and position changes
+     */
+    private fun onMapReady(enabled: Boolean) {
+        // mapbox camera setup
+        binding.mapView.getMapboxMap().setCamera(
+            CameraOptions.Builder()
+                .center(Point.fromLngLat(14.3539484, 49.8001304))
+                .zoom(2.0)
+                .build()
+        )
+
+        // set map style
+        binding.mapView.getMapboxMap().loadStyleUri(
+            Style.MAPBOX_STREETS
+        ) {
+            if (enabled) {
+                initLocationComponent()
+                addLocationListeners()
+            }
+        }
+
+        // listeners for clicking on the map
+        binding.mapView.getMapboxMap().addOnMapClickListener {
+            if (hasPermissions(requireContext())) {
+                onCameraTrackingDismissed()
+            }
+            true
+        }
+    }
+
+    /**
+     * Initializes component to retrieve current location
+     */
+    private fun initLocationComponent() {
+        val locationComponentPlugin = binding.mapView.location
+        locationComponentPlugin.updateSettings {
+            this.enabled = true
+            this.pulsingEnabled = true
+        }
+
+    }
+
+    /**
+     * Adds listeners to track position changes and gestures
+     */
+    private fun addLocationListeners() {
+        binding.mapView.location.addOnIndicatorPositionChangedListener(
+            onIndicatorPositionChangedListener
+        )
+        binding.mapView.gestures.addOnMoveListener(onMoveListener)
+
+    }
+
+    // activated when changes position
+    private val onIndicatorPositionChangedListener = OnIndicatorPositionChangedListener {
+        Log.d("MapFragment", "poloha je $it")
+        // update map with new position
+        refreshLocation(it)
+    }
+
+    /**
+     * Updates map with user's new location
+     */
+    private fun refreshLocation(point: Point) {
+        // center camera
+        binding.mapView.getMapboxMap()
+            .setCamera(CameraOptions.Builder().center(point).zoom(15.0).build())
+        // sets focal point to the new position
+        binding.mapView.gestures.focalPoint =
+            binding.mapView.getMapboxMap().pixelForCoordinate(point)
+        // updates lastLocation
+        lastLocation = point
+        addMarker(point)
+    }
+
+    /**
+     * Adds a marker to the location
+     */
+    private fun addMarker(point: Point) {
+
+        if (selectedPoint == null) {
+            annotationManager.deleteAll()
+            val pointAnnotationOptions = CircleAnnotationOptions()
+                .withPoint(point)
+                .withCircleRadius(100.0)
+                .withCircleOpacity(0.2)
+                .withCircleColor("#000")
+                .withCircleStrokeWidth(2.0)
+                .withCircleStrokeColor("#ffffff")
+            selectedPoint = annotationManager.create(pointAnnotationOptions)
+        } else {
+            selectedPoint?.let {
+                it.point = point
+                annotationManager.update(it)
+            }
+        }
+    }
+
+    // Reacts to movement events on the map
+    private val onMoveListener = object : OnMoveListener {
+        // called at the beginning of a movement
+        override fun onMoveBegin(detector: MoveGestureDetector) {
+            onCameraTrackingDismissed()
+        }
+
+        // Reacts to motion events
+        override fun onMove(detector: MoveGestureDetector): Boolean {
+            return false
+        }
+
+        // called at the end of a movement
+        override fun onMoveEnd(detector: MoveGestureDetector) {}
+    }
+
+    /**
+     * Called when it is necessary to untrack the camera's position relative to the user's position
+     */
+    private fun onCameraTrackingDismissed() {
+        binding.mapView.apply {
+            location.removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
+            gestures.removeOnMoveListener(onMoveListener)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.mapView.apply {
+            // cleaning listeners
+            location.removeOnIndicatorPositionChangedListener(onIndicatorPositionChangedListener)
+            gestures.removeOnMoveListener(onMoveListener)
         }
     }
 }
