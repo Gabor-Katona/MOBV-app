@@ -39,6 +39,7 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.mapbox.maps.extension.style.style
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotation
 import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationManager
@@ -156,17 +157,6 @@ class ProfileFragment : Fragment() {
             annotationManager = bnd.mapView.annotations.createCircleAnnotationManager()
             pointAnnotationManager = bnd.mapView.annotations.createPointAnnotationManager()
 
-            // permission check
-            val hasPermission = hasPermissions(requireContext())
-            val sharing = PreferenceData.getInstance().getSharing(requireContext())
-            // map initialization
-            onMapReady(hasPermission && sharing)
-
-
-            /*val user = PreferenceData.getInstance().getUser(requireContext())
-            if (user != null) {
-                bnd.textEmail.text = user.email
-            }*/
 
             if (NetworkUtils.isNetworkAvailable(requireContext())) {
                 // load user
@@ -190,6 +180,65 @@ class ProfileFragment : Fragment() {
             val endTime = PreferenceData.getInstance().getEndSharingTime(requireContext())
             if (endTime != null) {
                 viewModel.endTime.postValue("od %d:%02d".format(endTime.hour, endTime.minute))
+            }
+
+            var isBetween = true
+
+            // start and end times are set
+            if (startTime != null && endTime != null) {
+                // calculate interval
+                val currentTime = LocalTime.now()
+                isBetween = currentTime.isAfter(startTime) && currentTime.isBefore(endTime)
+            }
+
+            // permission check
+            val hasPermission = hasPermissions(requireContext())
+            val sharing = PreferenceData.getInstance().getSharing(requireContext())
+            // map initialization
+            onMapReady(hasPermission && sharing && isBetween)
+
+            if (!(sharing && isBetween)) {
+                var center = Point.fromLngLat(0.0, 0.0)
+
+                val scope = CoroutineScope(Dispatchers.Main)
+                scope.launch {
+                    // get all users
+                    val users =
+                        DataRepository.getInstance(requireContext()).getUsersList() ?: emptyList()
+
+                    if(users.isNotEmpty()) {
+
+                        // logged user radius
+                        var radius = 100.0
+
+                        // find logged user to get possition
+                        for (u in users) {
+                            if (u.uid == viewModel.userResult.value?.id) {
+                                center = Point.fromLngLat(u.lon, u.lat)
+                                radius = u.radius
+                                Log.d("mapfragment", u.toString())
+                            }
+                        }
+
+                        // draw circle
+                        bnd.mapView.getMapboxMap().loadStyle(
+                            style(Style.MAPBOX_STREETS) {
+                                val pointAnnotationOptions = CircleAnnotationOptions()
+                                    .withPoint(center)
+                                    .withCircleRadius(radius)
+                                    .withCircleOpacity(0.2)
+                                    .withCircleColor("#000")
+                                    .withCircleStrokeWidth(2.0)
+                                    .withCircleStrokeColor("#ffffff")
+                                annotationManager.create(pointAnnotationOptions)
+                            }
+                        )
+
+                        // center the camera
+                        bnd.mapView.getMapboxMap()
+                            .setCamera(CameraOptions.Builder().center(center).zoom(15.0).build())
+                    }
+                }
             }
 
             bnd.timeStartButton.setOnClickListener {
@@ -370,6 +419,7 @@ class ProfileFragment : Fragment() {
                 } else {
                     turnOffSharing()
                 }
+                view.findNavController().navigate(R.id.action_to_profile)
             }
 
         }
@@ -558,6 +608,7 @@ class ProfileFragment : Fragment() {
         } else {
             turnOffSharing()
         }
+        view?.findNavController()?.navigate(R.id.action_to_profile)
     }
 
     //---------------------------------------------------------------------------------
