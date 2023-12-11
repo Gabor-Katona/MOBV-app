@@ -213,6 +213,7 @@ class ProfileFragment : Fragment() {
                     viewModel.startHour.postValue(null)
                     viewModel.startMinute.postValue(null)
                     viewModel.startTime.postValue("od:")
+                    PreferenceData.getInstance().putStartSharingTime(requireContext(), null)
                     workerSetAfterTimePicker()
                     //Log.d("profFrag", PreferenceData.getInstance().getStartSharingTime(requireContext()).toString());
                 }
@@ -248,10 +249,10 @@ class ProfileFragment : Fragment() {
 
                 //cancel button
                 timePickerDialog.setOnCancelListener {
-                    Log.d("button", "cancel")
                     viewModel.endHour.postValue(null)
                     viewModel.endMinute.postValue(null)
                     viewModel.endTime.postValue("do:")
+                    PreferenceData.getInstance().putEndSharingTime(requireContext(), null)
                     workerSetAfterTimePicker()
                 }
 

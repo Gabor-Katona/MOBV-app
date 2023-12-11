@@ -73,10 +73,10 @@ class PreferenceData private constructor() {
         return sharing
     }
 
-    fun putStartSharingTime(context: Context?, time: LocalTime) {
+    fun putStartSharingTime(context: Context?, time: LocalTime?) {
         val sharedPref = getSharedPreferences(context) ?: return
         val editor = sharedPref.edit()
-        val timeAsString = time.format(DateTimeFormatter.ISO_LOCAL_TIME)
+        val timeAsString = time?.format(DateTimeFormatter.ISO_LOCAL_TIME)
         editor.putString(startSharingTimeKey, timeAsString)
         editor.apply()
     }
@@ -92,10 +92,10 @@ class PreferenceData private constructor() {
         }
     }
 
-    fun putEndSharingTime(context: Context?, time: LocalTime) {
+    fun putEndSharingTime(context: Context?, time: LocalTime?) {
         val sharedPref = getSharedPreferences(context) ?: return
         val editor = sharedPref.edit()
-        val timeAsString = time.format(DateTimeFormatter.ISO_LOCAL_TIME)
+        val timeAsString = time?.format(DateTimeFormatter.ISO_LOCAL_TIME)
         editor.putString(endSharingTimeKey, timeAsString)
         editor.apply()
     }
