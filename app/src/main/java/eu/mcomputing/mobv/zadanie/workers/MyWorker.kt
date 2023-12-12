@@ -9,15 +9,11 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import eu.mcomputing.mobv.zadanie.ProfileFragment
 import eu.mcomputing.mobv.zadanie.R
 import eu.mcomputing.mobv.zadanie.data.api.DataRepository
-import eu.mcomputing.mobv.zadanie.viewmodels.ProfileViewModel
+import eu.mcomputing.mobv.zadanie.data.db.entities.UserEntity
 import java.time.LocalTime
 
 class MyWorker(appContext: Context, workerParams: WorkerParameters) :
@@ -50,22 +46,129 @@ class MyWorker(appContext: Context, workerParams: WorkerParameters) :
             }
         }
 
+        // getting old users before refresh
+        val oldUsers = DataRepository.getInstance(applicationContext).getUsersList() ?: emptyList()
+
         DataRepository.getInstance(applicationContext).apiGeofenceUsers()
 
-        createNotification(applicationContext)
+        createNotification(applicationContext, oldUsers)
+
 
         return Result.success()
     }
 
-    suspend fun createNotification(context: Context) {
+    suspend fun createNotification(context: Context, oldUsers: List<UserEntity>) {
 
         val users = DataRepository.getInstance(context).getUsersList() ?: emptyList()
 
+        //val newUsers = mutableListOf<UserEntity>(UserEntity("fd","fd","fdf",0.0, 1.2, 100.0 ,""))
+        val newUsers = mutableListOf<UserEntity>()
+
+        // get new users
+        for (u in users) {
+            /*if (u !in oldUsers) {
+                newUsers.add(u)
+            }*/
+            var notExist = true
+            for (oldU in oldUsers){
+                if (oldU.uid == u.uid) {
+                    notExist = false
+                    break
+                }
+            }
+
+            if(notExist){
+                newUsers.add(u)
+            }
+        }
+
+        if (newUsers.isEmpty()) {
+            val name = "MOBV Zadanie"
+            val descriptionText = "V okolí je ${users.size} používateľov"
+            val text = users.joinToString { it.name }
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel_id = "kanal-1"
+            val channel =
+                NotificationChannel(channel_id, name, importance).apply {
+                    description = descriptionText
+                }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
+            val builder =
+                NotificationCompat.Builder(context, channel_id).apply {
+                    setContentTitle(descriptionText)
+                    setContentText(text)
+                    setSmallIcon(R.mipmap.ic_launcher_round)
+                    priority = NotificationCompat.PRIORITY_DEFAULT
+                }
+
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.d("Notifikacia", "Chyba povolenie na notifikaciu");
+                return
+            }
+
+            NotificationManagerCompat.from(context).notify(1, builder.build())
+        } else {
+            // new user list is not empty
+            val name = "MOBV Zadanie"
+            val descriptionText = "V okolí je ${newUsers.size} nových používateľov"
+            val text = newUsers.joinToString { it.name }
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel_id = "kanal-2"
+            val channel =
+                NotificationChannel(channel_id, name, importance).apply {
+                    description = descriptionText
+                }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
+            val builder =
+                NotificationCompat.Builder(context, channel_id).apply {
+                    setContentTitle(descriptionText)
+                    setContentText(text)
+                    setSmallIcon(R.mipmap.ic_launcher_round)
+                    priority = NotificationCompat.PRIORITY_DEFAULT
+                }
+
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.d("Notifikacia", "Chyba povolenie na notifikaciu");
+                return
+            }
+
+            NotificationManagerCompat.from(context).notify(2, builder.build())
+        }
+    }
+
+    suspend fun createNewNotification(context: Context, oldUsers: List<UserEntity>) {
+
+        val users = DataRepository.getInstance(context).getUsersList() ?: emptyList()
+
+        val newUsers = mutableListOf<UserEntity>()
+
+        for (u in users) {
+            if (u !in oldUsers) {
+                newUsers.add(u)
+            }
+        }
+
         val name = "MOBV Zadanie"
-        val descriptionText = "V okolí je ${users.size} používateľov"
-        val text = users.joinToString { it.name }
+        val descriptionText = "V okolí je ${newUsers.size} nových používateľov"
+        val text = newUsers.joinToString { it.name }
         val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel_id = "kanal-1"
+        val channel_id = "kanal-2"
         val channel =
             NotificationChannel(channel_id, name, importance).apply {
                 description = descriptionText
@@ -92,6 +195,6 @@ class MyWorker(appContext: Context, workerParams: WorkerParameters) :
             return
         }
 
-        NotificationManagerCompat.from(context).notify(1, builder.build())
+        NotificationManagerCompat.from(context).notify(2, builder.build())
     }
 }
