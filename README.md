@@ -76,7 +76,7 @@ This Android mobile application implements a user geofencing system where users 
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/geofencing-app.git
+   git clone https://github.com/Gabor-Katona/MOBV-app.git
     ```
 2. Open the project in Android Studio.
 3. Sync the project with Gradle files.
